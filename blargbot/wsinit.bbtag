@@ -1,6 +1,0 @@
-{if;{argslength};>;0;	{//; need globals only}
-  {if;{isarray;{get;_ws-tag}};==;false;{execcc;bsoinit}}
-  ; {//; need temp, to be removed after full cc switch}
-  {execcc;bsoinit;obsolete}
-}
-{return;false}

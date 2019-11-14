@@ -1,4 +1,9 @@
+{//;Changelog
+2019-11-10 - Adapted for Elder Things
+}
+
 {suppresslookup} {//; suppresses errors from lookup system}
+{timer;{delete;{messageid}};5s}
 {set;~userid;{userid}}
 
 {if;{argslength};>;1;
@@ -6,38 +11,22 @@
   __**Usage:**__ !{commandname} [ws role]
 }
 
-{set;~publicroles;369615227454488576;455134557532848139}
-{set;~everyoneCategory;372174329456230403}
-{set;~ws-opponentChans;479306306981724170;410887759893626881;423596924768354304;423595847679475732}
-{set;~limitedChans;{concat;{channels;{get;~everyoneCategory}};{get;~ws-opponentChans}}}
-{set;~mainwsTags;["BSO-WS","FIN-WS","ENF-WS","DAU-WS","OBN-WS"]}
-{set;~altwsTags;["gmu-ws","prophecy-ws","altstars-ws"]}
-{set;~maincorpNicks;Black;Final;Enforcers;Dauntless;Obsidian}
-{set;~altcorpNicks;G.M.U.;Prophecy;Alt Stars}
-{set;~maincorpIDs;387715016222048265;387715242957864971;387715522575204352;401489230951481354;406431073296318465}
-{set;~altcorpIDs;472262667789139988;472262704984489984;490946875768176641}
-{set;~wsTags;{concat;{get;~mainwsTags};{get;~altwsTags}}}
-{set;~corpNicks;{concat;{get;~maincorpNicks};{get;~altcorpNicks}}}
-{set;~corpIDs;{concat;{get;~maincorpIDs};{get;~altcorpIDs}}}
+{set;~afkchannels;["wsa-chat","wsa-afk","wsa-orders","wsb-chat","wsb-afk","wsb-orders","programming"]}
 
-{if;{indexof;{get;~limitedChans};{channelid}};>;-1;
-	{if;{userhasrole;{get;~publicroles};{get;~userid}};==;false;
-		This command cannot be run in public channels.{return}
-    }
-}
+{set;~afkchannelid;[]}
+{foreach;~afkchan;~afkchannels;{push;~afkchannelid;{channelid;{get;~afkchan}}}}
+
+{//;quit if it is not used in approved afk channels}
+{if;{indexof;{get;~afkchannelid};{channelid}};==;-1;
+  Command can only be used in the following channels:{newline}{foreach;~approvedchan;~afkchannels;{get;~approvedchan},{space}}{return}}
 
 {set;~uidlist;[]}
 {set;~wsindex;-1}
 {if;{argslength};==;1;
-  {set;~wsindex;{indexof;{get;~corpIDs};{roleid;{args;0}}}}
-  {if;{get;~wsindex};>;-1;
-    {foreach;~uid;{get;_afk_list};
-      {if;{userhasrole;{get;~corpIDs;{get;~wsindex}};{get;~uid}};
-        {push;{get;~uidlist};{get;~uid}}
-      }
+  {foreach;~uid;{get;_afk_list};
+    {if;{userhasrole;{args;0};{get;~uid}};
+      {push;{get;~uidlist};{get;~uid}}
     }
-  ;
-    `{args;0}` is not a valid WS role.{newline}Please specify one of {join;{get;~wsTags};,{space}}.{return}
   }
 ;
   {set;~uidlist;{get;_afk_list}}
@@ -45,7 +34,15 @@
 
 {switch;{commandname};
 listafk;
-{if;{length;{get;_afk_list}};The following {if;{get;~wsindex};>;-1;{get;~wsTags;{get;~wsindex}};server} members are marked as being AFK:{newline}{regexreplace;{foreach;~uid;{get;~uidlist};{usernick;{get;~uid}},{space}};/, $/;.};No server members are currently marked as being AFK.}
+{if;{length;{get;_afk_list}};
+  {set;~now;{time;X}}
+  {set;~response;The following {if;{argslength};{args;0}{space}}members are marked as being AFK and their expected return time:{newline}{regexreplace;{foreach;~uid;{get;~uidlist};{usernick;{get;~uid}}:{space}{set;~afkX;{time;X;{get;_{get;~uid}_afk}}}{set;~ago;{trim;{execcc;timediff;twodivs;{get;~now};{get;~afkX}}}}{if;{math;-;{get;~now};{get;~afkX}};<;0;will return **in {get;~ago}**.;said they'd return **{get;~ago} ago**.}{newline}};/, $/;.}}
+;
+  {set;~response;No server members are currently marked as being AFK.}
+}
+
+{set;~temp;{send;{channelid};{get;~response}}}
+{timer;{delete;{channelid};{get;~temp}};30s}
 ;
 ["jwstimes","wstimes","jraw","jafk"];
 	{get;~uidlist}

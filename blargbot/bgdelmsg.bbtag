@@ -1,0 +1,62 @@
+{//;Changelog
+2019-11-10 - Initial version
+
+Args:
+0: time in seconds on when to delete
+1: channel ID
+2: message ID
+
+_delmsg data is TIMExCHANIDxMSGID
+}
+{set;~error;0}
+
+{//; initialize array}
+{if;{isarray;{get;_delmsg}};;{set;_delmsg;[]}}
+{if;{isarray;{get;_nextbgtasktime}};;{set;_nextbgtasktime;[]}}
+
+{//;args: [deletion seconds, channel id, message id]}
+{if;{argslength};==;3;
+  {foreach;~a;{argsarray};
+    {if;{parseint;{get;~a}};==;NaN;{set;~error;1}}}
+  {if;0{get;~error};;
+    {set;~ftime;{math;+;{time;X};{args;0}}}
+    {push;_delmsg;{get;~ftime}x{args;1}x{args;2}}
+	{push;_nextbgtasktime;{get;~ftime}}
+  }
+}
+
+{//;deletion code}
+{set;~continue;1}
+{if;0{length;{get;_delmsg}};
+  {sort;_delmsg}
+  {while;0{get;~continue};==;1;{//;set;~continue;0}
+    {set;~currmsg;{get;_delmsg;0}}
+    {set;~i;{split;{get;~currmsg};x}}
+	{//;check to make sure that the length of split is as expected, if not expected, then delete from array}
+    {if;{length;{get;~i}};!=;3;{//;{shift;_delmsg}{if;0{length;{get;_delmsg}};;{set;~continue;0}}};
+      {set;~time;{get;~i;0}}
+      {set;~chanid;{get;~i;1}}
+      {set;~msgid;{get;~i;2}}
+      {if;{get;~time};<;{time;X};
+        {//;check to make sure message still exists. in case someone deleted manually}
+        {if;{messagetext;{get;~chanid};{get;~msgid}};!=;{messagetext;{channelid};{void}};
+          {delete;{get;~chanid};{get;~msgid}}}
+		{//;check to make sure text really got deleted. If message still exist, then quit as deletion quote may have been exceeded}
+        {if;{messagetext;{get;~chanid};{get;~msgid}};!=;{messagetext;{channelid};{void}};
+		  {//;message still exists}
+          {//;push;_delmsg;{get;~currmsg}}
+          {set;~continue;0}
+        ;
+		  {//;message deleted successfully}
+		  {void;{shift;_delmsg}}
+		  {void;{shift;_nextbgtasktime}}
+          {if;0{length;{get;_delmsg}};;{set;~continue;0}}
+        }
+      ;
+	    {//;earliest message to delete hasn't timed out yet. exit}
+        {//;push;_delmsg;{get;~currmsg}}
+        {set;~continue;0}
+      }
+    }
+  }
+}

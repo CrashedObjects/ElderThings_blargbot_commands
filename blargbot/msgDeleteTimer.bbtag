@@ -1,0 +1,13 @@
+{if;0{get;_{userid}_msgdel};
+  {set;~diff;{math;-;{time;X;{get;_{userid}_msgdel}};{time;X;{get;_{userid}_msgdel_set}}}}
+  {if;{time;X;{get;_{userid}_msgdel_set}};<;{time;X};
+    {set;~lastafkmsgid;{get;_{userid}_lastafkmsgid}}
+    {set;~lastafkchanid;{get;_{userid}_lastafkchanid}}
+    {if;0{get;~lastafkmsgid};
+      {delete;{get;~lastafkchanid};{get;~lastafkmsgid}}
+	  {set;_{userid}_lastafkmsgid}
+      {set;_{userid}_lastafkchanid}
+    }
+	{set;_{userid}_msgdel}
+  }
+}

@@ -1,0 +1,14 @@
+{//;no chat channel names}
+{set;~nochatchannels;["wsa-afk","wsb-afk"]}
+
+{set;~nochatchannelid;[]}
+{foreach;~nochatchan;~nochatchannels;{push;~nochatchannelid;{channelid;{get;~nochatchan}}}}
+
+{//;if message from chat channel, inform user and queue message for deletion (unless its special commands}
+{if;{logic;||;{bool;{lower;{messagetext}};startswith;b!back};{bool;{lower;{messagetext}};startswith;b!afk}};;
+  {if;{indexof;{get;~nochatchannelid};{channelid}};!=;-1;
+    {set;~msgid;{send;{channelid};This channel is **not for chat**. Please move to another channel.{newline}Above messages will be deleted shortly}}
+    {execcc;bgdelmsg;60;{channelid};{messageid}}
+    {execcc;bgdelmsg;60;{channelid};{get;~msgid}}
+  }
+}
