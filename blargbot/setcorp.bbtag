@@ -1,0 +1,67 @@
+{//; changelog 
+2018-08-04 - remove all [] parts in username
+2019-05-13 - add check for opponent corp, prompt to auto-add role
+2019-11-16 - Adapted to Elder Things
+}
+
+{suppresslookup} {//; suppresses errors from lookup system}
+{timer;{delete;{messageid}};5s}
+{set;guestrole;{roleid;visitor}}
+{set;allyrole;{roleid;member}}
+
+{if;{argslength};<;1;
+    __**Command Name**__: {commandname}    
+    __**Usage**__: !{commandname} <user> [corp]
+    {return}
+}
+
+{set;~userid;{userid;{args;0}}}
+{set;~self;0}
+{if;{get;~userid};==;;{set;~userid;{userid}{set;~self;1}}}
+{set;~username;{username;{get;~userid}}}
+{set;~usernick;{usernick;{get;~userid}}}
+
+{set;~userroles;{roles;{get;~userid}}}
+{set;~index;-1}
+{set;~isOKtoset;0}
+{if;{userhasrole;{get;guestrole};{get;~usernick}};{set;~isOKtoset;1}}
+
+{if;{get;~isOKtoset};==;0;
+    :x: `{get;~usernick}` is not a visitor. Check that they have the right roles and try again.
+    {return}
+}
+
+{if;{get;~self};==;1;
+    {set;~corpname;{args;0;n}}
+;
+    {if;{userhasrole;{get;guestrole};{usernick}};
+      {set;~corpname;{args;0;n}}
+    ;
+      {set;~corpname;{args;1;n}}
+    }
+}
+{set;~basenick;{get;~usernick}}
+{while;{get;~basenick};includes;[; {//;remove all bracketed parts}
+  	{set;~openbracket;{indexof;{get;~basenick};[}}
+  	{set;~closebracket;{indexof;{get;~basenick};]}}
+  	{set;~base1;{substring;{get;~basenick};0;{math;-;{get;~openbracket};1}}}
+    {set;~base2;{substring;{get;~basenick};{math;+;{get;~closebracket};1}}}
+    {set;~basenick;{get;~base1}{get;~base2}}
+}
+{set;~newnick;[{get;~corpname}] {trim;{get;~basenick}}}
+
+{if;{length;{get;~newnick}};<=;32;
+    {if;{setnick;{get;~newnick};{get;~userid}};includes;Could not change nickname;
+        :x: Could not rename `{get;~usernick}` to `{get;~newnick}`. Probably a permissions issue.
+    ;
+        {set;~msg;:white_check_mark: Renamed `{get;~usernick}` to `{get;~newnick}`.}
+    }
+;
+    :x: `{get;~newnick}` exceeds 32 characters.
+}
+
+{//;set;_{get;~userid}_usernick;{usernick;{get;~userid}}} {//; me may have changed nickname. Set guild variable accordingly}
+
+{if;0{length;{get;~msg}};
+  {set;~msgid;{send;{channelid};{get;~msg}}}
+}
