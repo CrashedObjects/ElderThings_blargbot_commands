@@ -6,26 +6,26 @@
 2019-01-29 - Allow for optional reason to be set for being AFK
 2019-11-10 - Adapted for Elder Things
 
-!cc sethelp afk __**Usage:**__ b!afk <duration> [ reason ]
+{prefix}cc sethelp afk __**Usage:**__ {prefix}afk <duration> [ reason ]
 
 Sets your status as being away for a length of time. Durations may be specified in days, hours, minutes, seconds.
 If a reason is specified, it will be shown in the !seen command.
 
-Use `b!back` to indicate you have returned. 
+Use `{prefix}back` to indicate you have returned. 
 
-To customize your AFK settings, type `b!help afkset`
+To customize your AFK settings, type `{prefix}help afkset`
 
 Examples:
-b!afk 7 hours
-b!afk 2h
-b!afk 30 mins
-b!afk 2h30m
+{prefix}afk 7 hours
+{prefix}afk 2h
+{prefix}afk 30 mins
+{prefix}afk 2h30m
 }
 
 {suppresslookup} {//; suppresses errors from lookup system}
 {timer;{delete;{messageid}};5s}
 {set;~userid;{userid}}
-{set;~afkchannels;["wsa-chat","wsa-afk","wsa-orders","wsb-chat","wsb-afk","wsb-orders","programming"]}
+{set;~afkchannels;["wsa-chat","wsa-afk","wsa-orders","wsb-chat","wsb-afk","wsb-orders","programming","testing-playground"]}
 
 {set;~afkchannelid;[]}
 {foreach;~afkchan;~afkchannels;{push;~afkchannelid;{channelid;{get;~afkchan}}}}
@@ -40,9 +40,9 @@ b!afk 2h30m
 
 {if;{argslength};<;1;
   __**Command Name:**__ {commandname}
-  __**Usage:**__ !{commandname} <duration> [ reason ]
+  __**Usage:**__ {prefix}{commandname} <duration> [ reason ]
 
-To indicate you have returned from AFK, type b!back. For more information, type `!help afk`{return}
+To indicate you have returned from AFK, type {prefix}back. For more information, type `{prefix}help afk`{return}
 }
 
 {set;~parsedtime;{execcc;parsetime;{args}}}
@@ -59,7 +59,7 @@ To indicate you have returned from AFK, type b!back. For more information, type 
   {set;~duration;{parseint;{get;~parsedtime}}}
 }
 
-{if;{get;~duration};==;0;Unable to parse your duration properly. Use `!help {commandname}` for usage information.{return}}
+{if;{get;~duration};==;0;Unable to parse your duration properly. Use `{prefix}help {commandname}` for usage information.{return}}
 
 {if;{get;~duration};>;172800;
   Unable to set AFK duration beyond 48h.{newline}
@@ -74,7 +74,7 @@ To indicate you have returned from AFK, type b!back. For more information, type 
 {set;~futurelocal;{time;;{math;+;{get;~futureunix};{get;~tzdiff}};X}}
 {set;~time_in_words;{if;0{get;~days};{space}{get;~days}d}{if;0{get;~hours};{space}{get;~hours}h}{if;0{get;~mins};{space}{get;~mins}m}{if;0{get;~secs};{space}{get;~secs}s}}
 
-{set;~afkresponse;{usermention;{get;~userid}}, you are marked as AFK for the next{get;~time_in_words}. {if;{length;{get;~message}};Reason: {get;~message}}{newline}{if;0{get;~longreason};{newline}{newline}Your AFK reason exceeded 500 characters and was truncated.}{if;0{get;_{get;~userid}_afk};{newline}{newline}You previously marked yourself AFK but didn't use `b!back` to indicate your return. Your AFK time has been updated.}}
+{set;~afkresponse;{usermention;{get;~userid}}, you are marked as AFK for the next{get;~time_in_words}. {if;{length;{get;~message}};Reason: {get;~message}}{newline}{if;0{get;~longreason};{newline}{newline}Your AFK reason exceeded 500 characters and was truncated.}{if;0{get;_{get;~userid}_afk};{newline}{newline}You previously marked yourself AFK but didn't use `{prefix}back` to indicate your return. Your AFK time has been updated.}}
 
 {delete}
 

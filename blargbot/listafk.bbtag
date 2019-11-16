@@ -8,7 +8,7 @@
 
 {if;{argslength};>;1;
   __**Command Name:**__ {commandname}
-  __**Usage:**__ !{commandname} [ws role]
+  __**Usage:**__ {prefix}{commandname} [ws role]
 }
 
 {set;~afkchannels;["wsa-chat","wsa-afk","wsa-orders","wsb-chat","wsb-afk","wsb-orders","programming"]}

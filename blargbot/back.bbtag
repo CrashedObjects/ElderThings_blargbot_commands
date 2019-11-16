@@ -5,7 +5,7 @@
 
 {//;{if;{argslength};>;0;
   __**Command Name:**__ {commandname}
-  __**Usage:**__ !{commandname}{return}
+  __**Usage:**__ {prefix}{commandname}{return}
 }}
 
 {suppresslookup} {//; suppresses errors from lookup system}
