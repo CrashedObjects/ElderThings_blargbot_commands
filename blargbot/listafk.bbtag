@@ -11,7 +11,7 @@
   __**Usage:**__ {prefix}{commandname} [ws role]
 }
 
-{set;~afkchannels;["wsa-chat","wsa-afk","wsa-orders","wsb-chat","wsb-afk","wsb-orders","programming"]}
+{set;~afkchannels;["wsa-chat","wsa-afk","wsa-orders","wsb-chat","wsb-afk","wsb-orders","programming","testing-playground"]}
 
 {set;~afkchannelid;[]}
 {foreach;~afkchan;~afkchannels;{push;~afkchannelid;{channelid;{get;~afkchan}}}}
