@@ -11,7 +11,7 @@
 
 {if;{argslength};<;1;
     __**Command Name**__: {commandname}    
-    __**Usage**__: !{commandname} <user> [corp]
+    __**Usage**__: {prefix}{commandname} <user> [corp]
     {return}
 }
 
