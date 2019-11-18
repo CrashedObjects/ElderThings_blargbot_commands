@@ -9,7 +9,7 @@
 
 {//;Set user as back if they were AFK}
 {if;0{get;_{userid}_afk};
-  {if;{logic;||;{bool;{lower;{messagetext}};startswith;{prefix}back};{bool;{lower;{messagetext}};startswith;{prefix}afk}};;{execcc;back}}
+  {if;{logic;||;{bool;{lower;{messagetext}};startswith;{prefix}back};{bool;{lower;{messagetext}};startswith;b!back};{bool;{lower;{messagetext}};startswith;{prefix}afk};{bool;{lower;{messagetext}};startswith;b!afk}};;{execcc;back}}
 ;
 {//;  {set;~lastafkmsgid;{get;_{userid}_lastafkmsgid}}
   {set;~lastafkchanid;{get;_{userid}_lastafkchanid}}
