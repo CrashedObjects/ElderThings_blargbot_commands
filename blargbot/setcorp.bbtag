@@ -11,20 +11,23 @@
 
 {if;{argslength};<;1;
     __**Command Name**__: {commandname}    
-    __**Usage**__: {prefix}{commandname} <user> [corp]
+    __**Usage**__: !{commandname} <user> [corp]
     {return}
 }
 
 {set;~userid;{userid;{args;0}}}
+{set;~unick;{args;0}}
 {set;~self;0}
-{if;{get;~userid};==;;{set;~userid;{userid}{set;~self;1}}}
+{if;{get;~userid};==;;{set;~userid;{userid}{set;~self;1}}{set;~unick;{usernick}}}
 {set;~username;{username;{get;~userid}}}
 {set;~usernick;{usernick;{get;~userid}}}
+
 
 {set;~userroles;{roles;{get;~userid}}}
 {set;~index;-1}
 {set;~isOKtoset;0}
-{if;{userhasrole;{get;guestrole};{get;~usernick}};{set;~isOKtoset;1}}
+
+{if;{userhasrole;{get;guestrole};{get;~unick}};{set;~isOKtoset;1}}
 
 {if;{get;~isOKtoset};==;0;
     :x: `{get;~usernick}` is not a visitor. Check that they have the right roles and try again.
