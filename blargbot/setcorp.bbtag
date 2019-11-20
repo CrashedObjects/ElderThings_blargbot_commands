@@ -18,7 +18,10 @@
 {set;~userid;{userid;{args;0}}}
 {set;~unick;{args;0}}
 {set;~self;0}
-{if;{get;~userid};==;;{set;~userid;{userid}{set;~self;1}}{set;~unick;{usernick}}}
+{if;{get;~userid};==;;{set;~self;1}}
+{if;{userhasrole;{get;guestrole}};{set;~self;1}}
+{if;{get;~self};==;1;{set;~userid;{userid}}{set;~unick;{usernick}}}
+
 {set;~username;{username;{get;~userid}}}
 {set;~usernick;{usernick;{get;~userid}}}
 
