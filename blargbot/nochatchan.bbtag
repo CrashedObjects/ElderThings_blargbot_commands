@@ -1,11 +1,12 @@
 {//;no chat channel names}
-{set;~nochatchannels;["wsa-afk","wsb-afk"]}
+{set;~nochatchannels;["wsa-afk","wsb-afk","testing-playground"]}
 
 {set;~nochatchannelid;[]}
 {set;deleteTimeDelay;60}
 {set;deleteTimeDelay5;{math;+;{get;deleteTimeDelay};5}}
 
 {foreach;~nochatchan;~nochatchannels;{push;~nochatchannelid;{channelid;{get;~nochatchan}}}}
+{if;{length;{get;_{channelid}_noChatChanWarnExpiry}};==;0;{set;_{channelid}_noChatChanWarnExpiry;0}}
 
 {//;if message from chat channel, inform user and queue message for deletion (unless it's special commands}
 {if;{logic;||;{bool;{lower;{messagetext}};startswith;b!};{bool;{lower;{messagetext}};startswith;{prefix}back};{bool;{lower;{messagetext}};startswith;{prefix}afk};{bool;{lower;{messagetext}};startswith;{prefix}afko}};;
