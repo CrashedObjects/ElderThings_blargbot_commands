@@ -25,13 +25,14 @@ Examples:
 {suppresslookup} {//; suppresses errors from lookup system}
 {timer;{delete;{messageid}};5s}
 {set;~userid;{userid}}
-{set;~afkchannels;["wsa-chat","wsa-afk","wsa-orders","wsb-chat","wsb-afk","wsb-orders","programming","testing-playground"]}
+{execcc;afkcommon;1}
+{//;set;~afkchannels;["wsa-chat","wsa-afk","wsa-orders","wsa-team-1","wsa-team-2","wsa-team-3","wsa-offense","wsb-chat","wsb-afk","wsb-orders","programming","testing-playground"]}
 
-{set;~afkchannelid;[]}
-{foreach;~afkchan;~afkchannels;{push;~afkchannelid;{channelid;{get;~afkchan}}}}
+{//;set;~afkchannelid;[]}
+{//;foreach;~afkchan;~afkchannels;{push;~afkchannelid;{channelid;{get;~afkchan}}}}
 
 {//;quit if it is not used in approved afk channels}
-{if;{indexof;{get;~afkchannelid};{channelid}};==;-1;
+{//;if;{indexof;{get;~afkchannelid};{channelid}};==;-1;
   Command can only be used in the following channels:{newline}{foreach;~approvedchan;~afkchannels;{get;~approvedchan},{space}}{return}}
   
 {set;~afkchannel;{channelid}}
