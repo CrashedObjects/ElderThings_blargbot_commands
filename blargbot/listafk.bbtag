@@ -37,7 +37,7 @@
 listafk;
 {if;{length;{get;_afk_list}};
   {set;~now;{time;X}}
-  {set;~response;The following {if;{argslength};{args;0}{space}}members are marked as being AFK and their expected return time:{newline}{regexreplace;{foreach;~uid;{get;~uidlist};{usernick;{get;~uid}}:{space}{set;~afkX;{time;X;{get;_{get;~uid}_afk}}}{set;~ago;{trim;{execcc;timediff;twodivs;{get;~now};{get;~afkX}}}}{if;{math;-;{get;~now};{get;~afkX}};<;0;will return **in {get;~ago}**.;said they'd return **{get;~ago} ago**.}{newline}};/, $/;.}}
+  {set;~response;The following {if;{argslength};{args;0}{space}}members are marked as being AFK and their expected return time:{newline}{newline}{regexreplace;{foreach;~uid;{get;~uidlist};__{usernick;{get;~uid}}__:{space}{set;~afkX;{time;X;{get;_{get;~uid}_afk}}}{set;~ago;{trim;{execcc;timediff;twodivs;{get;~now};{get;~afkX}}}}{if;{math;-;{get;~now};{get;~afkX}};<;0;will return **in {get;~ago}**.;said they'd return **{get;~ago} ago**.}{newline}};/, $/;.}}
 ;
   {set;~response;No server members are currently marked as being AFK.}
 }
