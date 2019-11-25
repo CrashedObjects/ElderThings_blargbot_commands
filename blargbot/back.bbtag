@@ -22,21 +22,16 @@
   {set;~backmsg;{if;0{get;_{userid}_afk};Ok, {usermention}, you are no longer marked as being AFK.{newline}{newline}You came back {if;{time;X;{get;_{userid}_afk}};>;{time;X};earlier;later} than expected.;{usermention}, you weren't marked as being AFK!}}
   
   {//;delete last afk message}
-  {set;~lastafkmsgid;{get;_{userid}_lastafkmsgid}}
-  {set;~lastafkchanid;{get;_{userid}_lastafkchanid}}
-  {if;0{get;~lastafkmsgid};
-    {if;{messagetext;{get;~lastafkchanid};{get;~lastafkmsgid}};!=;{messagetext;{get;~lastafkchanid};{void}};{delete;{get;~lastafkchanid};{get;~lastafkmsgid}}}
-    {set;_{userid}_lastafkmsgid}
-    {set;_{userid}_lastafkchanid}
-	{set;_{userid}_msgdel}
-  }
+  {execcc;dellastafkmsg}
 
   {set;~temp;{send;{channelid};{get;~backmsg}}}
   {timer;{delete;{get;~temp}};30s}
   
   {if;{get;~afkchannel};>;0;
-    {set;~temp2;{send;{get;~afkchannel};{usernick} is no longer AFK.{if;{length;{get;_{userid}_afk_msg}};{space}AFK reason was: {get;_{userid}_afk_msg}.}}}
-    {timer;{delete;{get;~afkchannel};{get;~temp2}};8h}
+    {set;_{userid}_lastafkchanid;{get;~afkchannel}}
+    {set;_{userid}_lastafkmsgid;{send;{get;_{userid}_lastafkchanid};{usernick} is no longer AFK.{if;{length;{get;_{userid}_afk_msg}};{space}AFK reason was: {get;_{userid}_afk_msg}.}}}
+    {set;~futuredelsec;28800}{//;8 hour deletion}
+    {execcc;bgdelmsg;{get;~futuredelsec};{get;_{userid}_lastafkchanid};{get;_{userid}_lastafkmsgid}}
   }
 
   {delete}
@@ -47,14 +42,7 @@
     {set;~backmsg;{usermention}, you are no longer marked as being AFK.{newline}{newline}You came back {if;{time;X;{get;_{userid}_afk}};>;{time;X};earlier;later} than expected.}
 	
     {//;delete last afk message}
-    {set;~lastafkmsgid;{get;_{userid}_lastafkmsgid}}
-    {set;~lastafkchanid;{get;_{userid}_lastafkchanid}}
-    {if;0{get;~lastafkmsgid};
-      {if;{messagetext;{get;~lastafkchanid};{get;~lastafkmsgid}};!=;{messagetext;{get;~lastafkchanid};{void}};{delete;{get;~lastafkchanid};{get;~lastafkmsgid}}}
-      {set;_{userid}_lastafkmsgid}
-      {set;_{userid}_lastafkchanid}
-	  {set;_{userid}_msgdel}
-    }
+    {execcc;dellastafkmsg}
 	
 	{if;{get;~afkchannel};>;0;
 	  {set;_{userid}_lastafkchanid;{get;~afkchannel}}

@@ -80,14 +80,7 @@ To indicate you have returned from AFK, type {prefix}back. For more information,
 {delete}
 
 {//;delete last afk message}
-{set;~lastafkmsgid;{get;_{get;~userid}_lastafkmsgid}}
-{set;~lastafkchanid;{get;_{get;~userid}_lastafkchanid}}
-{if;0{get;~lastafkmsgid};
-  {if;{messagetext;{get;~lastafkchanid};{get;~lastafkmsgid}};!=;{messagetext;{get;~lastafkchanid};{void}};{delete;{get;~lastafkchanid};{get;~lastafkmsgid}}}
-  {set;_{get;~userid}_lastafkchanid}
-  {set;_{get;~userid}_lastafkmsgid}
-  {set;_{userid}_msgdel}
-}
+{execcc;dellastafkmsg}
 
 {//;save channel and message id before sending message}
 {set;_{get;~userid}_lastafkchanid;{get;~afkchannel}}
