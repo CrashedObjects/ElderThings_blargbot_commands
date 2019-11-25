@@ -2,7 +2,7 @@
 {set;_bgIntervalMinutes;30}{//;setting background minimum interval as 30 mins}
 
 {if;{parseint;{get;_lastbgrun}};==;NaN;{set;_lastbgrun;{time;X}}}
-{if;{parseint;{get;_nextbgtasktime}};==;NaN;{set;_nextbgtasktime;[]}}
+{if;{isarray;{get;_nextbgtasktime}};;{set;_nextbgtasktime;[]}}
 {set;~runnow;0}
 
 {if;{argslength};>;0;

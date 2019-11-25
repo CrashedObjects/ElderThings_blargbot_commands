@@ -62,7 +62,7 @@
 	{execcc;bgdelmsg;{get;~futuredelsec};{get;_{userid}_lastafkchanid};{get;_{userid}_lastafkmsgid}}
     {//;timer;{delete;{get;~temp3}}{set;_{userid}_lastafkmsgid}{set;_{userid}_lastafkchanid};30s}
   ;
-  {return}
+  {return;0}
   }
 }
 
