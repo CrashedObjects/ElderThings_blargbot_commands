@@ -81,11 +81,13 @@ here;
   {set;~notifychan;{channelid}}
 ;
 list;
+  {execcc;afkcommon;1}
   {if;{logic;&&;{bool;{argslength};>;1};{func.checkprivs}};{set;~userid;{userid;{args;1;n}}}}
   {func.listreminds}
   {return}
 ;
 listall;
+  {execcc;afkcommon;1}
   {if;{func.checkprivs};!=;true;
     :x:
     {return}
@@ -101,6 +103,7 @@ listall;
   {return}
 ;
 ["delete","del","rm","cancel"];
+  {execcc;afkcommon;1}
 {lock;write;_{get;~userid}_reminder_del;
   {switch;true;
   {bool;{argslength};==;1};
