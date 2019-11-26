@@ -56,6 +56,17 @@ ID |  Elapsed |  Remain  | Destination | Content
 ```
 }
 
+{function;listremindschan;
+  {func.initarray;_{channelid}_reminders}
+  {set;~now;{time;X}}
+**Active Reminders for {channelname;{channelid}}**
+```java
+ID |  Elapsed |  Remain  | Destination | Content
+--------------------------------------------------
+{for;~i;0;<;{length;{get;_{channelid}_reminders}};{set;~rcid;{get;_{channelid}_reminders;{get;~i}}}{realpad;{math;+;{get;~i};1};2;{space};left} | {realpad;{trim;{execcc;timediff;twodivsshort;{get;~now};{get;{get;~rcid};1}}};8;{space};left} | {realpad;{trim;{execcc;timediff;twodivsshort;{get;~now};{get;{get;~rcid};2}}};8;{space};left} | {set;~chanid;{get;{get;~rcid};3}}{realpad;{if;{get;~chanid};==;DM;DM;{substring;#{channelname;{get;~chanid}};0;11}};11;{space};left} | {if;0{get;~debug};{get;~rcid} - }{execcc;removementions;{get;{get;~rcid};4}}{newline}}
+```
+}
+
 {if;{argslength};==;0;
   {func.usage}
   {return}
@@ -74,10 +85,14 @@ me;
 here;
   {set;~notifychan;{channelid}}
 ;
-list;
+listme;
   {execcc;afkcommon;1}
   {if;{logic;&&;{bool;{argslength};>;1};{func.checkprivs}};{set;~userid;{userid;{args;1;n}}}}
   {func.listreminds}
+  {return}
+;
+list;
+  {func.listremindschan}
   {return}
 ;
 listall;
@@ -227,6 +242,10 @@ listall;
 {func.initarray;_{get;~userid}_reminders}
 {set;_{get;~userid}_{get;~reminderid};1;{get;~nowxgmt};{get;~futuretimexgmt};{get;~notifychan};{get;~notifymsg}}
 {push;{get;_{get;~userid}_reminders};{get;~reminderid}}
+{if;{get;~notifychan};==;DM;;
+  {func.initarray;_{get;~notifychan}_reminders}
+  {push;{get;_{get;~notifychan}_reminders};_{get;~userid}_{get;~reminderid}}
+}
 
 {set;~embedmsg;{embedbuild;color:yellowgreen;thumbnail.url:https://cdn.discordapp.com/attachments/488346953147482113/578027719070187552/alarm_clock.png;title:Reminder;fields.name:Created;fields.value:{get;~originatetimemsg};fields.name:By;fields.value:{usermention;{get;~userid}}}}
 
@@ -241,6 +260,9 @@ listall;
   {lock;write;_{get;~userid}_reminder_del;
     {set;_{get;~userid}_{get;~reminderid};}
     {void;{splice;{get;_{get;~userid}_reminders};{indexof;{get;_{get;~userid}_reminders};{get;~reminderid}};1}}
+	{if;{get;~notifychan};==;DM;;
+	  {void;{splice;{get;_{get;~notifychan}_reminders};{indexof;{get;_{get;~notifychan}_reminders};_{get;~userid}_{get;~reminderid}};1}}
+	}
   }
 ;
   {get;~timeandmsg;0}s
