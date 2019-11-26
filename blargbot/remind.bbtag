@@ -62,12 +62,6 @@ ID |  Elapsed |  Remain  | Destination | Content
 }
 
 {set;~userid;{userid}}
-
-{set;~officerrolename;["officer"]}
-
-{set;~afkchannelid;[]}
-{foreach;~afkchan;~afkchannels;{push;~afkchannelid;{channelid;{get;~afkchan}}}}
-
 {set;~officerrole;{roleid;officer}}
 {set;~reportschan;{channelid;testing-playground}}
 {set;~adminchans;{channelid;testing-playground}}
