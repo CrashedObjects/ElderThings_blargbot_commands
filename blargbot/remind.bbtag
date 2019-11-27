@@ -147,7 +147,8 @@ listall;
       {set;~rid;{get;_{get;~userid}_reminders;{get;~rindex}}}
       {void;
 	    {if;{get;_{get;~userid}_{get;~rid};3};==;DM;;
-		  {splice;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};{indexof;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};_{get;~userid}_{get;~rid}};1}}
+		  {if;{indexof;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};_{get;~userid}_{get;~rid}};>;-1;
+		    {splice;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};{indexof;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};_{get;~userid}_{get;~rid}};1}}}
         {splice;{get;_{get;~userid}_reminders};{get;~rindex};1}
         {splice;{get;_{get;~userid}_{get;~rid}};0;1;0}
       }
@@ -166,7 +167,8 @@ listall;
         {set;~rindex;{math;-;{args;1};1}}
         {set;~rid;{get;_{get;~userid}_reminders;{get;~rindex}}}
 		{if;{get;_{get;~userid}_{get;~rid};3};==;DM;;
-		  {splice;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};{indexof;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};_{get;~userid}_{get;~rid}};1}}
+		  {if;{indexof;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};_{get;~userid}_{get;~rid}};>;-1;
+		    {splice;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};{indexof;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};_{get;~userid}_{get;~rid}};1}}}
         {splice;{get;_{get;~userid}_reminders};{get;~rindex};1}
         {splice;{get;_{get;~userid}_{get;~rid}};0;1;0}
       }
