@@ -76,7 +76,7 @@ ID |  Elapsed |  Remain  | Destination | Content
 {set;~officerrole;{roleid;officer}}
 {set;~reportschan;{channelid;testing-playground}}
 {set;~adminchans;{channelid;testing-playground}}
-{//;if;{userid};==;289098595628744704;{set;~debug;1}}
+{if;{userid};==;310428385501380611;{set;~debug;1}}
 
 {switch;{lower;{args;0}};
 me;
