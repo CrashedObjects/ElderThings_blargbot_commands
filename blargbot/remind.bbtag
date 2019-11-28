@@ -93,6 +93,8 @@ listme;
   {return}
 ;
 list;
+  {if;{logic;&&;{bool;{argslength};>;1};{bool;{lower;{args;1}};==;me}};{execcc;{commandname};listme}{return}}
+  {if;{logic;&&;{bool;{argslength};>;1};{bool;{lower;{args;1}};==;all}};{execcc;{commandname};listall}{return}}
   {func.listremindschan}
   {return}
 ;
@@ -113,21 +115,18 @@ listall;
   {return}
 ;
 ["delete","del","rm","cancel"];
-  {execcc;afkcommon;1}
-{lock;write;_{get;~userid}_reminder_del;
-  {switch;true;
-  {bool;{argslength};==;1};
-    {void;{send;{channelid};{func.listreminds}}}
-    {if;{length;{get;_{get;~userid}_reminders}};>;0;
+{lock;write;_{channelid}_reminder_del;
+    {void;{send;{channelid};{func.listremindschan}}}
+    {if;{length;{get;_{channelid}_reminders}};>;0;
       {set;~msgid;{send;{channelid};**{usernick}**, please type the ID of the reminder you wish to delete.
       
-    Type `c` to cancel. This query will expire in 2 minutes.}}
-  ;
-      :x: You have no active reminders to delete.
+    Type `c` to cancel. This query will expire in 1 minutes.}}
+    ;
+      :x: There are no active reminders to delete.
       {return}
     }
     {fallback;ERROR}
-    {set;~responsemsgid;{waitmessage;{channelid};{userid};{logic;||;{bool;{length;{trim;{execcc;parsenum;{messagetext}}}};>;0};{bool;{lower;{messagetext}};==;c}};120}}
+    {set;~responsemsgid;{waitmessage;{channelid};{userid};{logic;||;{bool;{length;{trim;{execcc;parsenum;{messagetext}}}};>;0};{bool;{lower;{messagetext}};==;c}};60}}
     {fallback}
     {if;{get;~responsemsgid};==;ERROR;
       {edit;{get;~msgid};**{usernick}**, please type the ID of the reminder you wish to delete.
@@ -143,15 +142,23 @@ listall;
     }
     {set;~response;{trim;{execcc;parsenum;{messagetext;{get;~responsemsgid;1}}}}}
 
-    {if;{logic;&&;{bool;{get;~response};>=;1};{bool;{get;~response};<=;{length;{get;_{get;~userid}_reminders}}}};
+    {set;~proceeddelchan;0}
+	
+    {if;{logic;&&;{bool;{get;~response};>=;1};{bool;{get;~response};<=;{length;{get;_{channelid}_reminders}}}};
       {set;~rindex;{math;-;{get;~response};1}}
-      {set;~rid;{get;_{get;~userid}_reminders;{get;~rindex}}}
+      {set;~rid;{get;_{channelid}_reminders;{get;~rindex}}}
+	  {set;~e0_u1_r2id;{split;{get;~rid};_}}
+	  {set;~proceeddelchan;1}
+	}
+}
+    {if;0{get;~proceeddelchan};
       {void;
-	    {if;{get;_{get;~userid}_{get;~rid};3};==;DM;;
-		  {if;{indexof;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};_{get;~userid}_{get;~rid}};>;-1;
-		    {splice;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};{indexof;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};_{get;~userid}_{get;~rid}};1}}}
-        {splice;{get;_{get;~userid}_reminders};{get;~rindex};1}
-        {splice;{get;_{get;~userid}_{get;~rid}};0;1;0}
+	    {if;{indexof;{get;_{get;~e0_u1_r2id;1}_reminders};{get;~e0_u1_r2id;2}};>;-1;
+		  {lock;write;_{get;~e0_u1_r2id;1}_reminder_del;
+		    {splice;{get;_{get;~e0_u1_r2id;1}_reminders};{indexof;_{get;~e0_u1_r2id;1}_reminders;{get;~e0_u1_r2id;2}};1}
+			{splice;{get;_{get;~e0_u1_r2id;1}_{get;~e0_u1_r2id;2}};0;1;0}}}
+        {lock;write;_{channelid}_reminder_del;
+		  {splice;{get;_{channelid}_reminders};{get;~rindex};1}}
       }
       {edit;{get;~msgid};**{usernick}**, please type the ID of the reminder you wish to delete.
       
@@ -161,7 +168,11 @@ listall;
       
       :x: {get;~response} is not a valid reminder ID.}
     }
-  ;
+  {return}
+;
+["deleteme","delme","rmme","cancelme"];
+  {execcc;afkcommon;1}
+  {switch;true;
   {bool;{argslength};>;1};
     {if;{logic;&&;{bool;{args;1};>=;1};{bool;{args;1};<=;{length;{get;_{get;~userid}_reminders}}}};
       {void;
@@ -169,15 +180,71 @@ listall;
         {set;~rid;{get;_{get;~userid}_reminders;{get;~rindex}}}
 		{if;{get;_{get;~userid}_{get;~rid};3};==;DM;;
 		  {if;{indexof;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};_{get;~userid}_{get;~rid}};>;-1;
-		    {splice;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};{indexof;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};_{get;~userid}_{get;~rid}};1}}}
-        {splice;{get;_{get;~userid}_reminders};{get;~rindex};1}
-        {splice;{get;_{get;~userid}_{get;~rid}};0;1;0}
+		    {lock;write;_{get;_{get;~userid}_{get;~rid};3}_reminder_del;
+		      {splice;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};{indexof;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};_{get;~userid}_{get;~rid}};1}}}}
+	    {lock;write;_{get;~userid}_reminder_del;
+          {splice;{get;_{get;~userid}_reminders};{get;~rindex};1}
+          {splice;{get;_{get;~userid}_{get;~rid}};0;1;0}}
       }
       :ballot_box_with_check: Deleted reminder ID {args;1}.
     ;
       :x: {args;1} is not a valid reminder ID.
     }
-}
+  ;
+  {bool;{argslength};==;1};
+    {lock;write;_{get;~userid}_reminder_del;
+      {void;{send;{channelid};{func.listreminds}}}
+      {if;{length;{get;_{get;~userid}_reminders}};>;0;
+        {set;~msgid;{send;{channelid};**{usernick}**, please type the ID of the reminder you wish to delete.
+      
+      Type `c` to cancel. This query will expire in 2 minutes.}}
+      ;
+        :x: You have no active reminders to delete.
+        {return}
+      }
+      {fallback;ERROR}
+      {set;~responsemsgid;{waitmessage;{channelid};{userid};{logic;||;{bool;{length;{trim;{execcc;parsenum;{messagetext}}}};>;0};{bool;{lower;{messagetext}};==;c}};120}}
+      {fallback}
+      {if;{get;~responsemsgid};==;ERROR;
+        {edit;{get;~msgid};**{usernick}**, please type the ID of the reminder you wish to delete.
+      
+        :x: Timed out waiting for selection.}
+        {return}
+      }
+      {if;{lower;{messagetext;{get;~responsemsgid;1}}};==;c;
+        {edit;{get;~msgid};**{usernick}**, please type the ID of the reminder you wish to delete.
+      
+        :x: Delete of reminder cancelled.}
+        {return}
+      }
+      {set;~response;{trim;{execcc;parsenum;{messagetext;{get;~responsemsgid;1}}}}}
+
+      {set;~proceeddelme;0}
+      {if;{logic;&&;{bool;{get;~response};>=;1};{bool;{get;~response};<=;{length;{get;_{get;~userid}_reminders}}}};
+        {set;~rindex;{math;-;{get;~response};1}}
+        {set;~rid;{get;_{get;~userid}_reminders;{get;~rindex}}}
+		{set;~proceeddelme;1}
+	  }
+	}
+	
+	{if;0{get;~proceeddelme};
+      {void;
+	    {if;{get;_{get;~userid}_{get;~rid};3};==;DM;;
+          {if;{indexof;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};_{get;~userid}_{get;~rid}};>;-1;
+		    {lock;write;_{get;_{get;~userid}_{get;~rid};3}_reminder_del;
+              {splice;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};{indexof;{get;_{get;_{get;~userid}_{get;~rid};3}_reminders};_{get;~userid}_{get;~rid}};1}}}}
+        {lock;write;_{get;~userid}_reminder_del;
+          {splice;{get;_{get;~userid}_reminders};{get;~rindex};1}
+          {splice;{get;_{get;~userid}_{get;~rid}};0;1;0}}
+      }
+      {edit;{get;~msgid};**{usernick}**, please type the ID of the reminder you wish to delete.
+      
+      :ballot_box_with_check: Deleted reminder ID {get;~response}.}
+    ;
+      {edit;{get;~msgid};**{usernick}**, please type the ID of the reminder you wish to delete.
+      
+      :x: {get;~response} is not a valid reminder ID.}
+    }
   }
   {return}
 ;
@@ -266,10 +333,10 @@ listall;
   }
   {lock;write;_{get;~userid}_reminder_del;
     {set;_{get;~userid}_{get;~reminderid};}
-    {void;{splice;{get;_{get;~userid}_reminders};{indexof;{get;_{get;~userid}_reminders};{get;~reminderid}};1}}
-	{if;{get;~notifychan};==;DM;;
-	  {void;{splice;{get;_{get;~notifychan}_reminders};{indexof;{get;_{get;~notifychan}_reminders};_{get;~userid}_{get;~reminderid}};1}}
-	}
+    {void;{splice;{get;_{get;~userid}_reminders};{indexof;{get;_{get;~userid}_reminders};{get;~reminderid}};1}}}
+  {if;{get;~notifychan};==;DM;;
+    {lock;write;_{get;~notifychan}_reminder_del;
+      {void;{splice;{get;_{get;~notifychan}_reminders};{indexof;{get;_{get;~notifychan}_reminders};_{get;~userid}_{get;~reminderid}};1}}}
   }
 ;
   {get;~timeandmsg;0}s
