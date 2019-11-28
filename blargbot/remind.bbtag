@@ -76,7 +76,8 @@ ID |  Elapsed |  Remain  | Destination | Content
 {set;~officerrole;{roleid;officer}}
 {set;~reportschan;{channelid;testing-playground}}
 {set;~adminchans;{channelid;testing-playground}}
-{if;{userid};==;310428385501380611;{set;~debug;1}}
+{if;{logic;&&;{bool;{userid};==;310428385501380611};{logic;||;{bool;{channelid};==;{channelid;programming}};{bool;{channelid};==;{channelid;testing-playground}}}};{set;~debug;1}}
+
 
 {switch;{lower;{args;0}};
 me;
@@ -253,7 +254,7 @@ listall;
   {push;{get;_{get;~notifychan}_reminders};_{get;~userid}_{get;~reminderid}}
 }
 
-{set;~embedmsg;{embedbuild;color:yellowgreen;thumbnail.url:https://cdn.discordapp.com/attachments/488346953147482113/578027719070187552/alarm_clock.png;title:Reminder;fields.name:Created;fields.value:{get;~originatetimemsg};fields.name:By;fields.value:{usermention;{get;~userid}}}}
+{set;~embedmsg;{embedbuild;color:yellowgreen;thumbnail.url:https://cdn.discordapp.com/attachments/488346953147482113/578027719070187552/alarm_clock.png;title:Reminder;fields.name:Created;fields.value:{execcc;timediff;twodivsshort;{time;X};{get;_{get;~userid}_{get;~reminderid};2}}{space}ago;fields.name:By;fields.value:{usermention;{get;~userid}}}}
 
 {timer;
   {if;0{get;_{get;~userid}_{get;~reminderid};0};
