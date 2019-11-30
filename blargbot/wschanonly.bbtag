@@ -1,0 +1,14 @@
+{//; parameter:
+args;0 = 1 provides verbose output on which channel is available for command usage
+}
+
+{//; quit early if it is not in allowed channels}
+{set;~wschannels;["wsa-chat","wsa-afk","wsa-orders","wsa-team-1","wsa-team-2","wsa-team-3","wsa-offense","wsb-chat","wsb-afk","wsb-orders","programming","testing-playground"]}
+
+{set;~wschannelid;[]}
+{foreach;~wschan;~wschannels;{push;~wschannelid;{channelid;{get;~wschan}}}}
+
+{if;{indexof;{get;~wschannelid};{channelid}};==;-1;
+  {if;{args;0};==;1;Command can only be used in the following channels:{newline}{foreach;~approvedchan;~wschannels;{get;~approvedchan},{space}}{return}}
+  {return}
+}
