@@ -9,9 +9,13 @@
 {set;guestrole;{roleid;visitor}}
 {set;allyrole;{roleid;member}}
 
-{if;{argslength};<;1;
-    __**Command Name**__: {commandname}    
-    __**Usage**__: !{commandname} <user> [corp]
+{function;help;
+  __**Command Name**__: {commandname}    
+  __**Usage**__: !{commandname} <user> [corp]
+}
+
+{if;{logic;||;{bool;{argslength};<;1};{bool;{args;0};==;help}};
+    {func.help}
     {return}
 }
 

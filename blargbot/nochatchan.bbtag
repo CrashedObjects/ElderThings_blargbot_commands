@@ -15,11 +15,13 @@ wsb-afk 637782942273503264
 {if;{length;{get;_{channelid}_noChatChanWarnExpiry}};==;0;{set;_{channelid}_noChatChanWarnExpiry;0}}
 
 {//;if message from chat channel, inform user and queue message for deletion (unless it's special commands}
-{if;{logic;||;{bool;{lower;{messagetext}};startswith;!};{bool;{lower;{messagetext}};startswith;b!};{bool;{lower;{messagetext}};startswith;{prefix}back};{bool;{lower;{messagetext}};startswith;{prefix}afk};{bool;{lower;{messagetext}};startswith;{prefix}afko};{bool;{lower;{messagetext}};startswith;{prefix}listafk}};;
+{if;{logic;||;{bool;{lower;{messagetext}};startswith;{prefix}back};{bool;{lower;{messagetext}};startswith;{prefix}afk};{bool;{lower;{messagetext}};startswith;{prefix}afko};{bool;{lower;{messagetext}};startswith;{prefix}listafk}};;
   {if;{indexof;{get;~nochatchannelid};{channelid}};!=;-1;
-    {if;{get;_{channelid}_noChatChanWarnExpiry};<;{time;X};
-		{execcc;bgdelmsg;{get;deleteTimeDelay5};{channelid};{send;{channelid};This channel is **not for chat**. Please move to another channel.{newline}Above messages will be deleted shortly.}}
-		{set;_{channelid}_noChatChanWarnExpiry;{math;+;{get;deleteTimeDelay5};{time;X}}}
+    {if;{logic;||;{bool;{lower;{messagetext}};startswith;!};{bool;{lower;{messagetext}};startswith;b!}};;
+      {if;{get;_{channelid}_noChatChanWarnExpiry};<;{time;X};
+  		  {execcc;bgdelmsg;{get;deleteTimeDelay5};{channelid};{send;{channelid};This channel is **not for chat**. Please move to another channel.{newline}Above messages will be deleted shortly.}}
+		  {set;_{channelid}_noChatChanWarnExpiry;{math;+;{get;deleteTimeDelay5};{time;X}}}
+	  }
 	}
     {execcc;bgdelmsg;{get;deleteTimeDelay};{channelid};{messageid}}
   }

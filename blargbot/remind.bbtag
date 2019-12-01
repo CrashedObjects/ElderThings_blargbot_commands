@@ -24,12 +24,45 @@ Examples:
 !remind del    - shows the list and prompts you for the ID to delete
 }
 
+{function;help;
+  __**Usage**__: !remind [ me | here | #channel ] < time > < message >
+                 !remind < list | listme | listall | delete | deleteme > [ @ user ]
+
+  `!remind [here | me | #channel-name] <time> <message>`
+  Allows you to set a reminder for a time in the future.
+  **here** (default if not specified) will give you the reminder in the channel that you are running this command
+  **me** will give you a DM
+  **#channel-name** will give you the reminder in that particular channel
+
+  **time** will be in the 1w2d3h4m5s format (for 1 week, 2 days, 3 hours, 4 mins, and 5 secs)
+  **message** anything you like
+
+  `!remind <list | listme | listall | delete | deleteme> [@user]`
+  **list** gives you a list of reminders in that channel
+  **listme** gives you a list reminders of the particular user (default to self).
+  **listall** list number of reminders set by user (only officers can use this)
+  **delete** deletes reminders in the current channel. It will provide with selection
+  **deleteme** deletes reminders created by you. It will provide with selection
+
+  Note: only officers can list other user's reminders
+
+  Examples:
+  !remind 7 days @jordan barrier 8
+  !remind me 6h30m warp miner in
+  !remind here 7 days @jordan barrier 8
+  !remind #general 30d It's been a month! 
+  !remind list    - shows all current active/ongoing reminders in that channel
+  !remind listme    - shows all your active/ongoing reminders
+  !remind del 1    - deletes reminder #1
+  !remind del    - shows the list and prompts you for the ID to delete
+}
+
 {function;usage;
   __**Usage**__: !remind < me | here | #channel > < time > < message >
 
 Sets a reminder for some time in the future.
   
-Type `!help reminders` for more information
+Type `!remind help` for more information
 }
 
 {function;initarray;
@@ -80,6 +113,10 @@ ID |  Elapsed |  Remain  | Destination | Content
 
 
 {switch;{lower;{args;0}};
+help;
+  {func.help}
+  {return}
+;
 me;
   {set;~notifychan;DM}
 ;
@@ -87,7 +124,7 @@ here;
   {set;~notifychan;{channelid}}
 ;
 listme;
-  {execcc;afkcommon;1}
+  {execcc;wschanonly;1}
   {if;{logic;&&;{bool;{argslength};>;1};{func.checkprivs}};{set;~userid;{userid;{args;1;n}}}}
   {func.listreminds}
   {return}
@@ -99,7 +136,7 @@ list;
   {return}
 ;
 listall;
-  {execcc;afkcommon;1}
+  {execcc;wschanonly;1}
   {if;{func.checkprivs};!=;true;
     :x:
     {return}
@@ -171,7 +208,7 @@ listall;
   {return}
 ;
 ["deleteme","delme","rmme","cancelme"];
-  {execcc;afkcommon;1}
+  {execcc;wschanonly;1}
   {switch;true;
   {bool;{argslength};>;1};
     {if;{logic;&&;{bool;{args;1};>=;1};{bool;{args;1};<=;{length;{get;_{get;~userid}_reminders}}}};

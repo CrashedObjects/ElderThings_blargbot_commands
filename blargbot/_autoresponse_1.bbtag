@@ -16,15 +16,7 @@
 }
 
 {//; quit early if it is not in allowed channels}
-{execcc;afkcommon}
-{//;set;~afkchannels;["wsa-chat","wsa-afk","wsa-orders","wsa-team-1","wsa-team-2","wsa-team-3","wsa-offense","wsb-chat","wsb-afk","wsb-orders","programming","testing-playground"]}
-
-{//;set;~afkchannelid;[]}
-{//;foreach;~afkchan;~afkchannels;{push;~afkchannelid;{channelid;{get;~afkchan}}}}
-
-{//;if;{indexof;{get;~afkchannelid};{channelid}};==;-1;
-  {return}
-}
+{execcc;wschanonly}
 
 {//; find out if there's actually someone mentioned who is AFK. 
      Sort into members vs non-members}

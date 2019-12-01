@@ -17,6 +17,13 @@
 {if;{userhasrole;{roleid;wsa-everyone}};{set;~afkchannel;{channelid;wsa-afk}}}
 {if;{userhasrole;{roleid;wsb-everyone}};{set;~afkchannel;{channelid;wsb-afk}}}
 
+{if;{args;0};==;help;
+  __**Command Name:**__ {commandname}
+  __**Usage:**__ {prefix}{commandname}
+  Manually returns user from AFK.
+  Note: Bot automatically returns user from AFK when user types something in the server after a certain period of time{return}
+}
+
 {switch;{lower;{commandname}};
 ["back","jback"];
   {set;~backmsg;{if;0{get;_{userid}_afk};Ok, {usermention}, you are no longer marked as being AFK.{newline}{newline}You came back {if;{time;X;{get;_{userid}_afk}};>;{time;X};earlier;later} than expected.;{usermention}, you weren't marked as being AFK!}}
@@ -62,7 +69,7 @@
 	{execcc;bgdelmsg;{get;~futuredelsec};{get;_{userid}_lastafkchanid};{get;_{userid}_lastafkmsgid}}
     {//;timer;{delete;{get;~temp3}}{set;_{userid}_lastafkmsgid}{set;_{userid}_lastafkchanid};30s}
   ;
-  {return;0}
+  {return}
   }
 }
 

@@ -25,15 +25,8 @@ Examples:
 {suppresslookup} {//; suppresses errors from lookup system}
 {timer;{delete;{messageid}};5s}
 {set;~userid;{userid}}
-{execcc;afkcommon;1}
-{//;set;~afkchannels;["wsa-chat","wsa-afk","wsa-orders","wsa-team-1","wsa-team-2","wsa-team-3","wsa-offense","wsb-chat","wsb-afk","wsb-orders","programming","testing-playground"]}
+{execcc;wschanonly;1}
 
-{//;set;~afkchannelid;[]}
-{//;foreach;~afkchan;~afkchannels;{push;~afkchannelid;{channelid;{get;~afkchan}}}}
-
-{//;quit if it is not used in approved afk channels}
-{//;if;{indexof;{get;~afkchannelid};{channelid}};==;-1;
-  Command can only be used in the following channels:{newline}{foreach;~approvedchan;~afkchannels;{get;~approvedchan},{space}}{return}}
   
 {set;~afkchannel;{channelid}}
 {if;{userhasrole;{roleid;wsa-everyone}};{set;~afkchannel;{channelid;wsa-afk}}}
@@ -43,7 +36,23 @@ Examples:
   __**Command Name:**__ {commandname}
   __**Usage:**__ {prefix}{commandname} <duration> [ reason ]
 
-To indicate you have returned from AFK, type {prefix}back. For more information, type `{prefix}help afk`{return}
+To indicate you have returned from AFK, type {prefix}back. For more information, type `{prefix}afk help`{return}
+}
+
+{if;{args;0};==;help;
+  __**Usage:**__ {prefix}afk <duration> [ reason ]
+
+  Sets your status as being away for a length of time. Durations may be specified in days, hours, minutes, seconds.
+  If a reason is specified, it will be shown in the !seen command.
+
+  Use `{prefix}back` to indicate you have returned. 
+
+  Examples:
+  {prefix}afk 7 hours
+  {prefix}afk 2h
+  {prefix}afk 30 mins
+  {prefix}afk 2h30m
+  {return}
 }
 
 {set;~parsedtime;{execcc;parsetime;{args}}}
@@ -60,7 +69,7 @@ To indicate you have returned from AFK, type {prefix}back. For more information,
   {set;~duration;{parseint;{get;~parsedtime}}}
 }
 
-{if;{get;~duration};==;0;Unable to parse your duration properly. Use `{prefix}help {commandname}` for usage information.{return}}
+{if;{get;~duration};==;0;Unable to parse your duration properly. Use `{prefix}{commandname} help` for usage information.{return}}
 
 {if;{get;~duration};>;172800;
   Unable to set AFK duration beyond 48h.{newline}

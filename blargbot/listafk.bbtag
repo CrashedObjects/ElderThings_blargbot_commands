@@ -4,22 +4,13 @@
 
 {suppresslookup} {//; suppresses errors from lookup system}
 {timer;{delete;{messageid}};5s}
-{execcc;afkcommon;1}
+{execcc;wschanonly;1}
 {set;~userid;{userid}}
 
 {if;{argslength};>;1;
   __**Command Name:**__ {commandname}
   __**Usage:**__ {prefix}{commandname} [ws role]
 }
-
-{//;set;~afkchannels;["wsa-chat","wsa-afk","wsa-orders","wsb-chat","wsb-afk","wsb-orders","programming","testing-playground"]}
-
-{//;set;~afkchannelid;[]}
-{//;foreach;~afkchan;~afkchannels;{push;~afkchannelid;{channelid;{get;~afkchan}}}}
-
-{//;quit if it is not used in approved afk channels}
-{//;if;{indexof;{get;~afkchannelid};{channelid}};==;-1;
-  Command can only be used in the following channels:{newline}{foreach;~approvedchan;~afkchannels;{get;~approvedchan},{space}}{return}}
 
 {set;~uidlist;[]}
 {set;~wsindex;-1}
