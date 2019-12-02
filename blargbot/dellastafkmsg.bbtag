@@ -1,9 +1,9 @@
 {//;delete last afk message}
-  {set;~lastafkmsgid;{get;_{userid}_lastafkmsgid}}
-  {set;~lastafkchanid;{get;_{userid}_lastafkchanid}}
+  {set;~lastafkmsgid;{get;_{args;0}_lastafkmsgid}}
+  {set;~lastafkchanid;{get;_{args;0}_lastafkchanid}}
   {if;0{get;~lastafkmsgid};
     {if;{messagetext;{get;~lastafkchanid};{get;~lastafkmsgid}};!=;{messagetext;{get;~lastafkchanid};{void}};{delete;{get;~lastafkchanid};{get;~lastafkmsgid}}}
-    {set;_{userid}_lastafkmsgid}
-    {set;_{userid}_lastafkchanid}
-	{set;_{userid}_msgdel}
+    {set;_{args;0}_lastafkmsgid}
+    {set;_{args;0}_lastafkchanid}
+	{set;_{args;0}_msgdel}
   }

@@ -29,7 +29,7 @@
   {set;~backmsg;{if;0{get;_{userid}_afk};Ok, {usermention}, you are no longer marked as being AFK.{newline}{newline}You came back {if;{time;X;{get;_{userid}_afk}};>;{time;X};earlier;later} than expected.;{usermention}, you weren't marked as being AFK!}}
   
   {//;delete last afk message}
-  {execcc;dellastafkmsg}
+  {execcc;dellastafkmsg;{userid}}
 
   {set;~temp;{send;{channelid};{get;~backmsg}}}
   {timer;{delete;{get;~temp}};30s}
@@ -49,7 +49,7 @@
     {set;~backmsg;{usermention}, you are no longer marked as being AFK.{newline}{newline}You came back {if;{time;X;{get;_{userid}_afk}};>;{time;X};earlier;later} than expected.}
 	
     {//;delete last afk message}
-    {execcc;dellastafkmsg}
+    {execcc;dellastafkmsg;{userid}}
 	
 	{if;{get;~afkchannel};>;0;
 	  {set;_{userid}_lastafkchanid;{get;~afkchannel}}

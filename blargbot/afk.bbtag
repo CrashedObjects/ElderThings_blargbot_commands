@@ -55,7 +55,20 @@ To indicate you have returned from AFK, type {prefix}back. For more information,
   {return}
 }
 
-{set;~parsedtime;{execcc;parsetime;{args}}}
+{if;{logic;&&;{bool;{argslength};>;1};{bool;{userid;{args;0};1};!=;{userid;zzzabcnobodyzzz;1}}};
+  {if;{userhasrole;{roleid;officer}};
+    {set;~userid;{userid;{args;0}}}
+  ;
+    {execcc;bgdelmsg;300;{channelid};{send;{channelid};Only officer can set other user's afk status}}
+    {return}
+  }
+}
+
+{if;{get;~userid};==;{userid};
+  {set;~parsedtime;{execcc;parsetime;{args}}}
+;
+  {set;~parsedtime;{execcc;parsetime;{args;1;n};set by {usernick}}}
+}
 
 {if;{isarray;{get;~parsedtime}};
   {set;~duration;{parseint;{get;~parsedtime;0}}}
@@ -69,10 +82,10 @@ To indicate you have returned from AFK, type {prefix}back. For more information,
   {set;~duration;{parseint;{get;~parsedtime}}}
 }
 
-{if;{get;~duration};==;0;Unable to parse your duration properly. Use `{prefix}{commandname} help` for usage information.{return}}
+{if;{get;~duration};==;0;{execcc;bgdelmsg;300;{channelid};{send;{channelid};Unable to parse your duration properly. Use `{prefix}{commandname} help` for usage information.}}{return}}
 
 {if;{get;~duration};>;172800;
-  Unable to set AFK duration beyond 48h.{newline}
+  {execcc;bgdelmsg;300;{channelid};{send;{channelid};Unable to set AFK duration beyond 48h.{newline}}}
   {return}
 }
 
@@ -89,7 +102,7 @@ To indicate you have returned from AFK, type {prefix}back. For more information,
 {delete}
 
 {//;delete last afk message}
-{execcc;dellastafkmsg}
+{execcc;dellastafkmsg;{get;~userid}}
 
 {//;save channel and message id before sending message}
 {set;_{get;~userid}_lastafkchanid;{get;~afkchannel}}
