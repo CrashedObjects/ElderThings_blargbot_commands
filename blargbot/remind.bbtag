@@ -94,9 +94,9 @@ ID |  Elapsed |  Remain  | Destination | Content
   {set;~now;{time;X}}
 **Active Reminders for {channelname;{channelid}}**
 ```java
-ID |  Elapsed |  Remain  | Destination | Content
+ID |  Elapsed |  Remain  |  Created By | Content
 --------------------------------------------------
-{for;~i;0;<;{length;{get;_{channelid}_reminders}};{set;~rcid;{get;_{channelid}_reminders;{get;~i}}}{realpad;{math;+;{get;~i};1};2;{space};left} | {realpad;{trim;{execcc;timediff;twodivsshort;{get;~now};{get;{get;~rcid};1}}};8;{space};left} | {realpad;{trim;{execcc;timediff;twodivsshort;{get;~now};{get;{get;~rcid};2}}};8;{space};left} | {set;~chanid;{get;{get;~rcid};3}}{realpad;{if;{get;~chanid};==;DM;DM;{substring;#{channelname;{get;~chanid}};0;11}};11;{space};left} | {if;0{get;~debug};{get;~rcid} - }{execcc;removementions;{get;{get;~rcid};4}}{newline}}
+{for;~i;0;<;{length;{get;_{channelid}_reminders}};{set;~rcid;{get;_{channelid}_reminders;{get;~i}}}{realpad;{math;+;{get;~i};1};2;{space};left} | {realpad;{trim;{execcc;timediff;twodivsshort;{get;~now};{get;{get;~rcid};1}}};8;{space};left} | {realpad;{trim;{execcc;timediff;twodivsshort;{get;~now};{get;{get;~rcid};2}}};8;{space};left} | {set;~usrid;{split;{get;~rcid};_}}{set;~usrid;{get;~usrid;1}}{realpad;{substring;{usernick;{get;~usrid}};0;11};11;{space};left} | {if;0{get;~debug};{get;~rcid} - }{execcc;removementions;{get;{get;~rcid};4}}{newline}}
 ```
 }
 
