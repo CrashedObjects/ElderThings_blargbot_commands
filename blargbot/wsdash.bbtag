@@ -8,11 +8,13 @@
 {set;~wsa-afk-chan;{channelid;wsa-a}}
 {set;~wsb-afk-chan;{channelid;wsb-a}}
 
+{if;{isarray;{get;_nextbgtasktime}};;{set;_nextbgtasktime;[]}}
+
 {//; afk update text}
 {function;afktext;
   {if;{length;{params}};
     {set;~now;{time;X}}
-    {set;~response;The following {if;{length;{params}};{length;{params}}{space}}members are marked as being AFK and their expected return time:{newline}{newline}{regexreplace;{foreach;~uid;{params};> {usernick;{get;~uid}}:{newline}{set;~afkX;{time;X;{get;_{get;~uid}_afk}}}{set;~ago;{trim;{execcc;timediff;twodivs;{get;~now};{get;~afkX}}}}{if;{math;-;{get;~now};{get;~afkX}};<;0;will return **in {get;~ago}**.;said they'd return **{get;~ago} ago**.}{newline}};/, $/;.}}
+    {set;~response;{commandname}{newline}Params{space}{params}{newline}Paramslength{space}{paramslength}{newline}Parramsarray{space}{paramsarray}{newline}The following {if;{length;{params}};{length;{params}}{space}}members are marked as being AFK and their expected return time:{newline}{newline}{regexreplace;{foreach;~uid;{params};> {usernick;{get;~uid}}:{newline}{set;~afkX;{time;X;{get;_{get;~uid}_afk}}}{set;~ago;{trim;{execcc;timediff;twodivs;{get;~now};{get;~afkX}}}}{if;{math;-;{get;~now};{get;~afkX}};<;0;will return **in {get;~ago}**.;said they'd return **{get;~ago} ago**.}{newline}};/, $/;.}}
   ;
     {set;~response;No members are currently marked as being AFK.}
   }
@@ -21,9 +23,17 @@
 {function;update_chan_msg;
   {if;{paramslength};==;2;
     {if;0{get;_{params;0}_msgid};
-      {edit;{params;0};{get;_{params;0}_msgid};{params;1}}
+      {if;{messagetext;{params;0};{get;_{params;0}_msgid}};!=;{params;1};
+        {edit;{params;0};{get;_{params;0}_msgid};{params;1}}
+        {if;{messagetext;{params;0};{get;_{params;0}_msgid}};!=;{params;1};
+          {push;{get;_nextbgtasktime};{math;+;{time;X};30}}
+        }
+      }
     ;
       {set;_{params;0}_msgid;{send;{params;0};{params;1}}}
+      {if;{messagetext;{params;0};{get;_{params;0}_msgid}};!=;{params;1};
+          {push;{get;_nextbgtasktime};{math;+;{time;X};30}}
+      }
     }
   }
 }

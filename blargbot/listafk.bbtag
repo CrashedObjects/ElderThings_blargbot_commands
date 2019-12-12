@@ -3,8 +3,11 @@
 }
 
 {suppresslookup} {//; suppresses errors from lookup system}
-{timer;{delete;{messageid}};5s}
-{execcc;wschanonly;1}
+{if;{commandname};==;listafk;
+  {timer;{delete;{messageid}};5s}
+  {execcc;wschanonly;1}
+}
+
 {set;~userid;{userid}}
 
 {if;{argslength};>;1;
