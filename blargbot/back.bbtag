@@ -78,3 +78,4 @@
 {set;_{userid}_seentimes}
 {set;_{userid}_afk}
 {set;_{userid}_afk_msg}
+{execcc;wsdash}

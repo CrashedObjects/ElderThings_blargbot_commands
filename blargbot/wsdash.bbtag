@@ -1,0 +1,37 @@
+{//;Changelog
+2019-11-10 - Initial version
+}
+
+{suppresslookup} {//; suppresses errors from lookup system}
+{set;~afk-wsa-uid;{execcc;listafk;{roleid;WSA-Everyone}}}
+{set;~afk-wsb-uid;{execcc;listafk;{roleid;WSB-Everyone}}}
+{set;~wsa-afk-chan;{channelid;wsa-a}}
+{set;~wsb-afk-chan;{channelid;wsb-a}}
+
+{//; afk update text}
+{function;afktext;
+  {if;{length;{params}};
+    {set;~now;{time;X}}
+    {set;~response;The following {if;{length;{params}};{length;{params}}{space}}members are marked as being AFK and their expected return time:{newline}{newline}{regexreplace;{foreach;~uid;{params};> {usernick;{get;~uid}}:{newline}{set;~afkX;{time;X;{get;_{get;~uid}_afk}}}{set;~ago;{trim;{execcc;timediff;twodivs;{get;~now};{get;~afkX}}}}{if;{math;-;{get;~now};{get;~afkX}};<;0;will return **in {get;~ago}**.;said they'd return **{get;~ago} ago**.}{newline}};/, $/;.}}
+  ;
+    {set;~response;No members are currently marked as being AFK.}
+  }
+}
+
+{function;update_chan_msg;
+  {if;{paramslength};==;2;
+    {if;0{get;_{params;0}_msgid};
+      {edit;{params;0};{get;_{params;0}_msgid};{params;1}}
+    ;
+      {set;_{params;0}_msgid;{send;{params;0};{params;1}}}
+    }
+  }
+}
+
+{//; WSA afk update}
+{func.afktext;{get;~afk-wsa-uid}}
+{func.update_chan_msg;{get;~wsa-afk-chan};{get;~response}}
+
+{//; WSB afk update}
+{func.afktext;{get;~afk-wsb-uid}}
+{func.update_chan_msg;{get;~wsb-afk-chan};{get;~response}}

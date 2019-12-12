@@ -113,5 +113,6 @@ To indicate you have returned from AFK, type {prefix}back. For more information,
 {if;{isarray;{get;_afk_list}};;{set;_afk_list;[]}}
 {if;{indexof;{get;_afk_list};{get;~userid}};==;-1;{push;{get;_afk_list};{get;~userid}}}
 {if;{length;{get;~message}};{set;_{get;~userid}_afk_msg;{get;~message}}}
+{execcc;wsdash}
 
 {//;{usernick} is set to AFK for{get;~time_in_words}.{if;{length;{get;_{get;~userid}_afk_msg}};{space}Reason: {get;_{get;~userid}_afk_msg}}}

@@ -23,4 +23,5 @@
   {set;_lastbgrun;{time;X}}
   {set;_nextbgrun;{math;+;{math;*;{get;_bgIntervalMinutes};60};{get;_lastbgrun}}}
   {execcc;bgdelmsg}
+  {execcc;wsdash}
 }

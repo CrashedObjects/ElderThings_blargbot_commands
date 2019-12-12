@@ -36,7 +36,7 @@ listafk;
 {set;~temp;{send;{channelid};{get;~response}}}
 {timer;{delete;{channelid};{get;~temp}};30s}
 ;
-["jwstimes","wstimes","jraw","jafk"];
+{//;["jwstimes","wstimes","jraw","jafk","wsdash"];}
 	{get;~uidlist}
-;
+{//;;}
 }
