@@ -22,4 +22,5 @@
 
 {//;if;0{get;_{userid}_msgdel};{execcc;msgdeletetimer}}
 {execcc;nochatchan}
+{execcc;wsdash}
 {execcc;backgroundtask}

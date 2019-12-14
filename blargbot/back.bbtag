@@ -14,8 +14,8 @@
 {if;0{length;{get;_{userid}_afk_autoback}};{set;~threshold;{get;_{userid}_afk_autoback}};{set;~threshold;0.50}} 
 
 {set;~afkchannel;0}
-{if;{userhasrole;{roleid;wsa-everyone}};{set;~afkchannel;{channelid;wsa-afk}}}
-{if;{userhasrole;{roleid;wsb-everyone}};{set;~afkchannel;{channelid;wsb-afk}}}
+{if;{userhasrole;{roleid;wsa-everyone}};{set;~afkchannel;{channelid;wsa-chat}}}
+{if;{userhasrole;{roleid;wsb-everyone}};{set;~afkchannel;{channelid;wsb-chat}}}
 
 {if;{args;0};==;help;
   __**Command Name:**__ {commandname}

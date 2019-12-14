@@ -1,0 +1,22 @@
+{//;Start by typing an opening brace.
+Documentation is available here: https://blargbot.xyz/tags/ }
+{//;foreach;~channel;{channels};{channelname;{get;~channel}}={get;~channel}{newline}}
+
+{function;initarray;
+  {if;{isarray;{get;{params;0}}};==;false;
+    {set;{params;0};[]}
+  }
+}
+
+{func.initarray;~chanid}
+
+{if;0{argslength};
+  {foreach;~channel;{args};
+    {if;{channelid;{get;~channel}};!=;{channelid;{void}};
+      {push;~chanid;{channelid;{get;~channel}}}
+    }
+  }
+  
+}
+
+{get;~chanid}

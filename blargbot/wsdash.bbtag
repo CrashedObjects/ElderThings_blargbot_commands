@@ -5,10 +5,20 @@
 {suppresslookup} {//; suppresses errors from lookup system}
 {set;~afk-wsa-uid;{execcc;listafk;{roleid;WSA-Everyone}}}
 {set;~afk-wsb-uid;{execcc;listafk;{roleid;WSB-Everyone}}}
-{set;~wsa-afk-chan;{channelid;wsa-a}}
-{set;~wsb-afk-chan;{channelid;wsb-a}}
+{set;~wsa-afk-chan;{channelid;wsa-afk}}
+{set;~wsb-afk-chan;{channelid;wsb-afk}}
+{set;~wsa-remind-chan;{channelid;wsa-reminders}}
+{set;~wsb-remind-chan;{channelid;wsb-reminders}}
+{set;~remindfullaccess;1}
+{commit}
 
-{if;{isarray;{get;_nextbgtasktime}};;{set;_nextbgtasktime;[]}}
+{if;{commandname};startswith;_autoresponse_;{set;~forcedupdate;0};{set;~forcedupdate;1}}
+
+{function;initarray;
+  {if;{isarray;{get;{params;0}}};==;false;
+    {set;{params;0};[]}
+  }
+}
 
 {//; afk update text}
 {function;afktext;
@@ -20,28 +30,84 @@
   }
 }
 
+{//; reminder update text}
+{function;remindertext;
+  {set;~lparams;{params;0}}
+  {if;{length;{get;~lparams}};<;2;{set;~response;Nothing to remind};
+  {set;~now;{time;X}}
+{set;~response;**Active Reminders for {get;~lparams;0}**
+```java
+ID |  Remain  | Destination | Content
+--------------------------------------------------
+{for;~i;1;<;{length;{get;~lparams}};{set;~rcid;{get;~lparams;{get;~i}}}{realpad;{get;~i};2;{space};left} | {realpad;{trim;{execcc;timediff;twodivsshort;{get;~now};{get;{get;~rcid};2}}};8;{space};left} | {set;~chanid;{get;{get;~rcid};3}}{realpad;{if;{get;~chanid};==;DM;DM;{substring;#{channelname;{get;~chanid}};0;11}};11;{space};left} | {execcc;removementions;{get;{get;~rcid};4}}{newline}}
+```}
+}}
+
 {function;update_chan_msg;
-  {if;{paramslength};==;2;
+  {//;void;{send;{channelid;testing-playground};testing {params;2}}}
+  {if;{paramslength};==;3;
+    {if;{logic;||;{bool;{params;2};!=;0};{bool;{math;+;{messageedittime;{params;0};{get;_{params;0}_msgid};X};900};<;{time;X}}};
     {if;0{get;_{params;0}_msgid};
       {if;{messagetext;{params;0};{get;_{params;0}_msgid}};!=;{params;1};
         {edit;{params;0};{get;_{params;0}_msgid};{params;1}}
         {if;{messagetext;{params;0};{get;_{params;0}_msgid}};!=;{params;1};
-          {push;{get;_nextbgtasktime};{math;+;{time;X};30}}
+          {set;{get;_nextbgrun};{math;+;{time;X};30}}
+		;
+		  {set;_{params;0}_nextupdate;{math;+;{time;X};300}}
         }
       }
     ;
       {set;_{params;0}_msgid;{send;{params;0};{params;1}}}
       {if;{messagetext;{params;0};{get;_{params;0}_msgid}};!=;{params;1};
-          {push;{get;_nextbgtasktime};{math;+;{time;X};30}}
+        {set;{get;_nextbgrun};{math;+;{time;X};30}}
+      ;
+	    {set;_{params;0}_nextupdate;{math;+;{time;X};300}}
       }
-    }
+    }}
   }
 }
 
-{//; WSA afk update}
-{func.afktext;{get;~afk-wsa-uid}}
-{func.update_chan_msg;{get;~wsa-afk-chan};{get;~response}}
+{set;~priority;[]}
+{push;{get;~priority};{messageedittime;{get;~wsa-afk-chan};{get;_{get;~wsa-afk-chan}_msgid};X}_wsa_afk}
+{push;{get;~priority};{messageedittime;{get;~wsa-remind-chan};{get;_{get;~wsa-remind-chan}_msgid};X}_wsa_remind}
+{push;{get;~priority};{messageedittime;{get;~wsb-afk-chan};{get;_{get;~wsb-afk-chan}_msgid};X}_wsb_afk}
+{push;{get;~priority};{messageedittime;{get;~wsb-remind-chan};{get;_{get;~wsb-remind-chan}_msgid};X}_wsb_remind}
+{sort;{get;~priority}}
 
+{for;~ind;0;<;4;
+  {if;{get;~priority;{get;~ind}};endswith;_wsa_afk;
+{//; WSA afk update}
+{//;if;{get;_{get;~wsa-afk-chan}_nextupdate};<;0;{set;_{get;~wsa-afk-chan}_nextupdate;0}}
+{//;if;{logic;||;{bool;{get;~forcedupdate};==;1};{bool;{get;_{get;~wsa-afk-chan}_nextupdate};<;{time;X}}};}
+  {func.afktext;{get;~afk-wsa-uid}}
+  {func.update_chan_msg;{get;~wsa-afk-chan};{get;~response};{get;~forcedupdate}}
+{//;}}
+  {if;{get;~priority;{get;~ind}};endswith;_wsa_remind;
+{//; WSA reminder updates}
+{//;if;{get;_{get;~wsa-remind-chan}_nextupdate};<;0;{set;_{get;~wsa-remind-chan}_nextupdate;0}}
+{//;if;{logic;||;{bool;{get;~forcedupdate};==;1};{bool;{get;_{get;~wsa-remind-chan}_nextupdate};<;{time;X}}};}
+  {set;~remindertextparamA;[]}
+  {push;{get;~remindertextparamA};WSA}
+  {set;~remindertextparamA;{concat;{get;~remindertextparamA};{execcc;remind;listchans;{execcc;wsachans}}}}
+  {func.remindertext;{get;~remindertextparamA}}
+  {func.update_chan_msg;{get;~wsa-remind-chan};{get;~response};{get;~forcedupdate}}
+{//;}}
+
+  {if;{get;~priority;{get;~ind}};endswith;_wsb_afk;
 {//; WSB afk update}
-{func.afktext;{get;~afk-wsb-uid}}
-{func.update_chan_msg;{get;~wsb-afk-chan};{get;~response}}
+{//;if;{get;_{get;~wsb-afk-chan}_nextupdate};<;0;{set;_{get;~wsb-afk-chan}_nextupdate;0}}
+{//;if;{logic;||;{bool;{get;~forcedupdate};==;1};{bool;{get;_{get;~wsb-afk-chan}_nextupdate};<;{time;X}}};}
+  {func.afktext;{get;~afk-wsb-uid}}
+  {func.update_chan_msg;{get;~wsb-afk-chan};{get;~response};{get;~forcedupdate}}
+{//;}}
+  {if;{get;~priority;{get;~ind}};endswith;_wsb_remind;
+{//; WSB reminder updates}
+{//;if;{get;_{get;~wsb-remind-chan}_nextupdate};<;0;{set;_{get;~wsb-remind-chan}_nextupdate;0}}
+{//;if;{logic;||;{bool;{get;~forcedupdate};==;1};{bool;{get;_{get;~wsb-remind-chan}_nextupdate};<;{time;X}}};}
+  {set;~remindertextparamB;[]}
+  {push;{get;~remindertextparamB};WSB}
+  {set;~remindertextparamB;{concat;{get;~remindertextparamB};{execcc;remind;listchans;{execcc;wsbchans}}}}
+  {func.remindertext;{get;~remindertextparamB}}
+  {func.update_chan_msg;{get;~wsb-remind-chan};{get;~response};{get;~forcedupdate}}
+{//;}}
+}

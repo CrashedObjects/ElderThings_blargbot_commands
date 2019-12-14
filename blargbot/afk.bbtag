@@ -29,8 +29,8 @@ Examples:
 
   
 {set;~afkchannel;{channelid}}
-{if;{userhasrole;{roleid;wsa-everyone}};{set;~afkchannel;{channelid;wsa-afk}}}
-{if;{userhasrole;{roleid;wsb-everyone}};{set;~afkchannel;{channelid;wsb-afk}}}
+{if;{userhasrole;{roleid;wsa-everyone}};{set;~afkchannel;{channelid;wsa-chat}}}
+{if;{userhasrole;{roleid;wsb-everyone}};{set;~afkchannel;{channelid;wsb-chat}}}
 
 {if;{argslength};<;1;
   __**Command Name:**__ {commandname}

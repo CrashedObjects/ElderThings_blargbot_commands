@@ -127,13 +127,40 @@ listme;
   {execcc;wschanonly;1}
   {if;{logic;&&;{bool;{argslength};>;1};{func.checkprivs}};{set;~userid;{userid;{args;1;n}}}}
   {func.listreminds}
+  {execcc;wsdash}
   {return}
 ;
 list;
   {if;{logic;&&;{bool;{argslength};>;1};{bool;{lower;{args;1}};==;me}};{execcc;{commandname};listme}{return}}
   {if;{logic;&&;{bool;{argslength};>;1};{bool;{lower;{args;1}};==;all}};{execcc;{commandname};listall}{return}}
   {func.listremindschan}
+  {execcc;wsdash}
   {return}
+;
+listchans;
+  {if;{logic;&&;{bool;{commandname};==;remind};{bool;{get;~remindfullaccess};!=;1}};{return}}
+  {//; returns a list of reminders}
+  {if;{argslength};<;2;{return;0}}
+  {set;~remindlistchans;[]}
+  {set;~tmpremindlistchans;[]}
+  {set;~channelidlist;[]}
+  {for;~index;1;<;{argslength};
+    {if;{channelid;{args;{get;~index}}};!=;{channelid;{void}};
+      {push;{get;~channelidlist};{channelid;{args;{get;~index}}}}
+    }
+  }
+  {foreach;~cid;{get;~channelidlist};
+    {foreach;~crid;{get;_{get;~cid}_reminders};
+      {push;~tmpremindlistchans;{get;{get;~crid};2}{get;~crid}}
+    }
+  }
+  {sort;{get;~tmpremindlistchans}}
+  {foreach;~t;{get;~tmpremindlistchans};
+    {set;~tempsplit;{split;{get;~t};_}}
+    {push;~remindlistchans;_{get;~tempsplit;1}_{get;~tempsplit;2}}
+  }
+  {get;~remindlistchans}
+  {return;0}
 ;
 listall;
   {execcc;wschanonly;1}
@@ -149,6 +176,7 @@ listall;
 {if;{length;{get;_{get;~uid}_reminders}};{realpad;{regexreplace;{usernick;{get;~uid}};/[^\x00-\x7F]/g;_};25;{space};right} | {length;{get;_{get;~uid}_reminders}}{newline}}
 }
 ```
+  {execcc;wsdash}
   {return}
 ;
 ["delete","del","rm","cancel"];
@@ -205,6 +233,7 @@ listall;
       
       :x: {get;~response} is not a valid reminder ID.}
     }
+  {execcc;wsdash}
   {return}
 ;
 ["deleteme","delme","rmme","cancelme"];
@@ -283,6 +312,7 @@ listall;
       :x: {get;~response} is not a valid reminder ID.}
     }
   }
+  {execcc;wsdash}
   {return}
 ;
   {switch;true;
@@ -360,6 +390,9 @@ listall;
 
 {set;~embedmsg;{embedbuild;color:yellowgreen;thumbnail.url:https://cdn.discordapp.com/attachments/488346953147482113/578027719070187552/alarm_clock.png;title:Reminder;fields.name:Created;fields.value:{execcc;timediff;twodivsshort;{time;X};{get;_{get;~userid}_{get;~reminderid};2}}{space}ago;fields.name:By;fields.value:{usermention;{get;~userid}}}}
 
+{//;func.initarray;_nextbgtasktime}
+{//;push;_nextbgtasktime;{get;_{get;~userid}_{get;~reminderid};2}}
+
 {timer;
   {if;0{get;_{get;~userid}_{get;~reminderid};0};
     {if;{get;~notifychan};==;DM;
@@ -375,6 +408,7 @@ listall;
     {lock;write;_{get;~notifychan}_reminder_del;
       {void;{splice;{get;_{get;~notifychan}_reminders};{indexof;{get;_{get;~notifychan}_reminders};_{get;~userid}_{get;~reminderid}};1}}}
   }
+  {execcc;wsdash}
 ;
   {get;~timeandmsg;0}s
 }
@@ -393,3 +427,4 @@ listall;
       5m
   }
 }
+{execcc;wsdash}
