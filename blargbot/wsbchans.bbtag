@@ -1,2 +1,11 @@
-{set;~wsb-channels;["wsb-chat","wsb-orders","wsb-team-1","wsb-team-2","wsb-team-3","wsb-offense","wsb-afk","wsb-reminders"]}
+{//;set;~wsb-channels;["wsb-chat","wsb-orders","wsb-team-1","wsb-team-2","wsb-team-3","wsb-offense","wsb-afk","wsb-reminders"]}
+{set;~wsbcatname;["White Star B","White Star B Dashboard"]}
+{set;~wsb-channels;[]}
+{foreach;~channels;{channels};
+  {foreach;~catname;{get;~wsbcatname};
+    {if;{channelcategory;{get;~channels}};==;{channelid;{get;~catname}};
+      {push;{get;~wsb-channels};{channelname;{get;~channels}}}
+    }
+  }
+}
 {get;~wsb-channels}

@@ -1,2 +1,11 @@
-{set;~wsa-channels;["wsa-chat","wsa-orders","wsa-red-team","wsa-blue-team","wsa-green-team","wsa-offense","wsa-afk","wsa-reminders"]}
+{//;set;~wsa-channels;["wsa-chat","wsa-orders","wsa-team-1","wsa-team-2","wsa-team-3","wsa-offense","wsa-afk","wsa-reminders"]}
+{set;~wsacatname;["White Star A","White Star A Dashboard"]}
+{set;~wsa-channels;[]}
+{foreach;~channels;{channels};
+  {foreach;~catname;{get;~wsacatname};
+    {if;{channelcategory;{get;~channels}};==;{channelid;{get;~catname}};
+      {push;{get;~wsa-channels};{channelname;{get;~channels}}}
+    }
+  }
+}
 {get;~wsa-channels}
