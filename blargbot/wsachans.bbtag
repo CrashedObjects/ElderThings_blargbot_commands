@@ -1,2 +1,2 @@
-{set;~wsa-channels;["wsa-chat","wsa-orders","wsa-red-team","wsa-blue-team","wsa-green-team","wsa-offense","testing-playground"]}
+{set;~wsa-channels;["wsa-chat","wsa-orders","wsa-red-team","wsa-blue-team","wsa-green-team","wsa-offense","wsa-afk","wsa-reminders"]}
 {get;~wsa-channels}

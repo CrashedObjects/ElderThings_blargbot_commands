@@ -1,2 +1,2 @@
-{set;~wsb-channels;["wsb-chat","wsb-orders","wsb-team-1","wsb-team-2","wsb-team-3","wsb-offense"]}
+{set;~wsb-channels;["wsb-chat","wsb-orders","wsb-team-1","wsb-team-2","wsb-team-3","wsb-offense","wsb-afk","wsb-reminders"]}
 {get;~wsb-channels}
