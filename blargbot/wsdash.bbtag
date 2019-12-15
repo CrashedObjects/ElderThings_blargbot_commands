@@ -1,5 +1,5 @@
 {//;Changelog
-2019-11-10 - Initial version
+2019-12-13 - Initial version
 }
 
 {suppresslookup} {//; suppresses errors from lookup system}
@@ -13,6 +13,7 @@
 {commit}
 
 {if;{commandname};startswith;_autoresponse_;{set;~forcedupdate;0};{set;~forcedupdate;1}}
+{set;~dataupdate;0}
 
 {function;initarray;
   {if;{isarray;{get;{params;0}}};==;false;
@@ -45,25 +46,30 @@ ID |  Remain  | Destination | Content
 
 {function;update_chan_msg;
   {//;void;{send;{channelid;testing-playground};testing {params;2}}}
+  {set;~update_chan_msg_success;0}
   {if;{paramslength};==;3;
+    {set;~bmsgtime;{messageedittime;{params;0};{get;_{params;0}_msgid};X}}
     {if;{logic;||;{bool;{params;2};!=;0};{bool;{math;+;{messageedittime;{params;0};{get;_{params;0}_msgid};X};900};<;{time;X}}};
-    {if;0{get;_{params;0}_msgid};
-      {if;{messagetext;{params;0};{get;_{params;0}_msgid}};!=;{params;1};
-        {edit;{params;0};{get;_{params;0}_msgid};{params;1}}
+      {if;0{get;_{params;0}_msgid};
+        {if;{messagetext;{params;0};{get;_{params;0}_msgid}};!=;{params;1};
+          {edit;{params;0};{get;_{params;0}_msgid};{params;1}}
+          {if;{get;~bmsgtime};==;{messageedittime;{params;0};{get;_{params;0}_msgid};X};
+            {set;{get;_nextbgrun};{math;+;{time;X};30}}
+		  ;
+  		    {set;_{params;0}_nextupdate;{math;+;{time;X};300}}
+			{set;~update_chan_msg_success;1}
+          }
+        }
+      ;
+        {set;_{params;0}_msgid;{send;{params;0};{params;1}}}
         {if;{messagetext;{params;0};{get;_{params;0}_msgid}};!=;{params;1};
           {set;{get;_nextbgrun};{math;+;{time;X};30}}
-		;
-		  {set;_{params;0}_nextupdate;{math;+;{time;X};300}}
+        ;
+          {set;_{params;0}_nextupdate;{math;+;{time;X};300}}
+		  {set;~update_chan_msg_success;1}
         }
       }
-    ;
-      {set;_{params;0}_msgid;{send;{params;0};{params;1}}}
-      {if;{messagetext;{params;0};{get;_{params;0}_msgid}};!=;{params;1};
-        {set;{get;_nextbgrun};{math;+;{time;X};30}}
-      ;
-	    {set;_{params;0}_nextupdate;{math;+;{time;X};300}}
-      }
-    }}
+	}
   }
 }
 
@@ -75,39 +81,53 @@ ID |  Remain  | Destination | Content
 {sort;{get;~priority}}
 
 {for;~ind;0;<;4;
+  {//; WSA afk update}
   {if;{get;~priority;{get;~ind}};endswith;_wsa_afk;
-{//; WSA afk update}
-{//;if;{get;_{get;~wsa-afk-chan}_nextupdate};<;0;{set;_{get;~wsa-afk-chan}_nextupdate;0}}
-{//;if;{logic;||;{bool;{get;~forcedupdate};==;1};{bool;{get;_{get;~wsa-afk-chan}_nextupdate};<;{time;X}}};}
-  {func.afktext;{get;~afk-wsa-uid}}
-  {func.update_chan_msg;{get;~wsa-afk-chan};{get;~response};{get;~forcedupdate}}
-{//;}}
+    {//; check to see if underlying data has changed. If changed, forced an update}
+    {func.initarray;_{get;~wsa-afk-chan}_data}
+	{if;{logic;||;{bool;{get;~afk-wsa-uid};!=;{get;_{get;~wsa-afk-chan}_data}};{bool;{get;~forcedupdate};==;1}};{set;~dataupdate;1};{set;~dataupdate;0}}
+	
+    {func.afktext;{get;~afk-wsa-uid}}
+    {func.update_chan_msg;{get;~wsa-afk-chan};{get;~response};{get;~dataupdate}}
+	{if;{get;~update_chan_msg_success};==;1;{set;_{get;~wsa-afk-chan}_data;{get;~afk-wsa-uid}}}
+  }
+  {//; WSA reminder updates}
   {if;{get;~priority;{get;~ind}};endswith;_wsa_remind;
-{//; WSA reminder updates}
-{//;if;{get;_{get;~wsa-remind-chan}_nextupdate};<;0;{set;_{get;~wsa-remind-chan}_nextupdate;0}}
-{//;if;{logic;||;{bool;{get;~forcedupdate};==;1};{bool;{get;_{get;~wsa-remind-chan}_nextupdate};<;{time;X}}};}
-  {set;~remindertextparamA;[]}
-  {push;{get;~remindertextparamA};WSA}
-  {set;~remindertextparamA;{concat;{get;~remindertextparamA};{execcc;remind;listchans;{execcc;wsachans}}}}
-  {func.remindertext;{get;~remindertextparamA}}
-  {func.update_chan_msg;{get;~wsa-remind-chan};{get;~response};{get;~forcedupdate}}
-{//;}}
+    {set;~remindertextparamA;[]}
+    {push;{get;~remindertextparamA};WSA}
+    {set;~remindertextparamA;{concat;{get;~remindertextparamA};{execcc;remind;listchans;{execcc;wsachans}}}}
+	
+	{//; check to see if underlying data has changed. If changed, forced an update}
+	{func.initarray;_{get;~wsa-remind-chan}_data}
+	{if;{logic;||;{bool;{get;~remindertextparamA};!=;{get;_{get;~wsa-remind-chan}_data}};{bool;{get;~forcedupdate};==;1}};{set;~dataupdate;1};{set;~dataupdate;0}}
+	
+    {func.remindertext;{get;~remindertextparamA}}
+    {func.update_chan_msg;{get;~wsa-remind-chan};{get;~response};{get;~dataupdate}}
+	{if;{get;~update_chan_msg_success};==;1;{set;_{get;~wsa-remind-chan}_data;{get;~remindertextparamA}}}
+  }
 
+  {//; WSB afk update}
   {if;{get;~priority;{get;~ind}};endswith;_wsb_afk;
-{//; WSB afk update}
-{//;if;{get;_{get;~wsb-afk-chan}_nextupdate};<;0;{set;_{get;~wsb-afk-chan}_nextupdate;0}}
-{//;if;{logic;||;{bool;{get;~forcedupdate};==;1};{bool;{get;_{get;~wsb-afk-chan}_nextupdate};<;{time;X}}};}
-  {func.afktext;{get;~afk-wsb-uid}}
-  {func.update_chan_msg;{get;~wsb-afk-chan};{get;~response};{get;~forcedupdate}}
-{//;}}
+    {//; check to see if underlying data has changed. If changed, forced an update}
+    {func.initarray;_{get;~wsb-afk-chan}_data}
+	{if;{logic;||;{bool;{get;~afk-wsb-uid};!=;{get;_{get;~wsb-afk-chan}_data}};{bool;{get;~forcedupdate};==;1}};{set;~dataupdate;1};{set;~dataupdate;0}}
+	
+    {func.afktext;{get;~afk-wsb-uid}}
+    {func.update_chan_msg;{get;~wsb-afk-chan};{get;~response};{get;~dataupdate}}
+	{if;{get;~update_chan_msg_success};==;1;{set;_{get;~wsb-afk-chan}_data;{get;~afk-wsb-uid}}}
+  }
+  {//; WSB reminder updates}
   {if;{get;~priority;{get;~ind}};endswith;_wsb_remind;
-{//; WSB reminder updates}
-{//;if;{get;_{get;~wsb-remind-chan}_nextupdate};<;0;{set;_{get;~wsb-remind-chan}_nextupdate;0}}
-{//;if;{logic;||;{bool;{get;~forcedupdate};==;1};{bool;{get;_{get;~wsb-remind-chan}_nextupdate};<;{time;X}}};}
-  {set;~remindertextparamB;[]}
-  {push;{get;~remindertextparamB};WSB}
-  {set;~remindertextparamB;{concat;{get;~remindertextparamB};{execcc;remind;listchans;{execcc;wsbchans}}}}
-  {func.remindertext;{get;~remindertextparamB}}
-  {func.update_chan_msg;{get;~wsb-remind-chan};{get;~response};{get;~forcedupdate}}
-{//;}}
+    {set;~remindertextparamB;[]}
+    {push;{get;~remindertextparamB};WSB}
+    {set;~remindertextparamB;{concat;{get;~remindertextparamB};{execcc;remind;listchans;{execcc;wsbchans}}}}
+	
+	{//; check to see if underlying data has changed. If changed, forced an update}
+	{func.initarray;_{get;~wsb-remind-chan}_data}
+	{if;{logic;||;{bool;{get;~remindertextparamB};!=;{get;_{get;~wsb-remind-chan}_data}};{bool;{get;~forcedupdate};==;1}};{set;~dataupdate;1};{set;~dataupdate;0}}
+	
+    {func.remindertext;{get;~remindertextparamB}}
+    {func.update_chan_msg;{get;~wsb-remind-chan};{get;~response};{get;~dataupdate}}
+	{if;{get;~update_chan_msg_success};==;1;{set;_{get;~wsb-remind-chan}_data;{get;~remindertextparamB}}}
+  }
 }
