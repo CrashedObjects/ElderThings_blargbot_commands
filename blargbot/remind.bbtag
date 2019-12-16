@@ -220,7 +220,7 @@ listall;
       {void;
 	    {if;{indexof;{get;_{get;~e0_u1_r2id;1}_reminders};{get;~e0_u1_r2id;2}};>;-1;
 		  {lock;write;_{get;~e0_u1_r2id;1}_reminder_del;
-		    {splice;{get;_{get;~e0_u1_r2id;1}_reminders};{indexof;_{get;~e0_u1_r2id;1}_reminders;{get;~e0_u1_r2id;2}};1}
+		    {splice;{get;_{get;~e0_u1_r2id;1}_reminders};{indexof;{get;_{get;~e0_u1_r2id;1}_reminders};{get;~e0_u1_r2id;2}};1}
 			{splice;{get;_{get;~e0_u1_r2id;1}_{get;~e0_u1_r2id;2}};0;1;0}}}
         {lock;write;_{channelid}_reminder_del;
 		  {splice;{get;_{channelid}_reminders};{get;~rindex};1}}
