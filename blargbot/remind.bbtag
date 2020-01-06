@@ -131,7 +131,7 @@ listme;
   {return}
 ;
 list;
-  {if;{logic;&&;{bool;{argslength};>;1};{bool;{lower;{args;1}};==;me}};{execcc;{commandname};listme}{return}}
+  {if;{logic;&&;{bool;{argslength};>;1};{bool;{lower;{args;1}};==;me}};{execcc;{commandname};listme;{args;2;n}}{return}}
   {if;{logic;&&;{bool;{argslength};>;1};{bool;{lower;{args;1}};==;all}};{execcc;{commandname};listall}{return}}
   {func.listremindschan}
   {execcc;wsdash}
