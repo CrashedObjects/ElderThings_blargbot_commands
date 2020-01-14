@@ -62,9 +62,13 @@
 ;
   {//;auto mention alt users}
   {set;~automentionmainmsg}
+  {set;~automentionmainmsgcontent;0}
   {foreach;~usermention;{regexmatch;{messagetext};/<@!?\d+>/g};
     {set;~mentioneduserid;{userid;{get;~usermention};quiet}}
     {if;{indexof;{get;~altAcc};{get;~mentioneduserid}};>;-1;
-      {set;~automentionmainmsg;{get;~automentionmainmsg}{space}{usermention;{get;~mainAcc;{indexof;{get;~altAcc};{get;~mentioneduserid}}}}}}}
-  {void;{send;{channelid};{get;~automentionmainmsg}{space}someone pinged your alt}}
+      {set;~automentionmainmsg;{get;~automentionmainmsg}{space}{usermention;{get;~mainAcc;{indexof;{get;~altAcc};{get;~mentioneduserid}}}}}
+      {set;~automentionmainmsgcontent;1}
+    }
+  }
+  {if;0{get;~automentionmainmsgcontent};{void;{send;{channelid};{get;~automentionmainmsg}{space}someone pinged your alt}}}
 }
