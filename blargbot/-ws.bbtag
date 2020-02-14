@@ -1,0 +1,35 @@
+{//;timer;{delete;{messageid}};5s}
+{if;{logic;&&;{bool;{argslength};>;0};{logic;||;{bool;{upper;{args;0}};==;A};{bool;{upper;{args;0}};==;B}}};
+  {if;{userhasrole;{roleid;officer}};
+    {set;~roleids;[]}
+    {foreach;~roleid;{roles};
+      {if;{upper;{rolename;{get;~roleid}}};startswith;WS{upper;{args;0}};
+        {push;{get;~roleids};{get;~roleid}}
+      }
+    }
+    {set;~deleteduserrole;[]}
+    {foreach;~rm;~roleids;
+      {set;~userrole;{rolemembers;{rolename;{get;~rm}}}}
+      {foreach;~index;~userrole;
+        {if;{roleremove;{roleid;{get;~rm}};{userid;{get;~index}}};
+          {push;{get;~deleteduserrole};{username;{get;~index}}}}
+      }
+    }
+    {set;~uniquedur;[]}
+    {sort;{get;~deleteduserrole}}
+    {foreach;~dur;~deleteduserrole;
+      {if;{get;~prevdur};==;{get;~dur};;
+        {push;{get;~uniquedur};{get;~dur}}
+      }
+      {set;~prevdur;{get;~dur}}
+    }
+    WS{upper;{args;0}} Role removed for: 
+    {for;~durindex;0;<;{length;{get;~uniquedur}};
+      {get;~uniquedur;{get;~durindex}}{if;{get;~durindex};==;{math;-;{length;{get;~uniquedur}};1};;,}{space}
+    }
+  ;
+    You need to have an Officer role to use this command
+  }
+;
+  Usage: {prefix}-ws <A | B>
+}

@@ -1,0 +1,15 @@
+{//;timer;{delete;{messageid}};5s}
+
+{if;{logic;&&;{bool;{argslength};>;1};{logic;||;{bool;{upper;{args;0}};==;A};{bool;{upper;{args;0}};==;B}}};
+  {if;{userhasrole;{roleid;officer}};
+    WS{upper;{args;0}} Role added for: 
+    {for;~index;1;<;{argslength};
+      {if;{roleadd;{roleid;WS{args;0}-Everyone};{userid;{args;{get;~index}}}};
+        {args;{get;~index}}{if;{get;~index};==;{math;-;{argslength};1};;,}{space};}
+    }
+  ;
+    You need to have an Officer role to use this command
+  }
+;
+  Usage: {prefix}ws <A | B> <users>
+}

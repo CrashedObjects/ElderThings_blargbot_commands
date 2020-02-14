@@ -1,0 +1,23 @@
+{suppresslookup}
+{if;{userhasrole;{roleid;officer}};;You need to have an Officer role to use this command{return}}
+
+{if;{argslength};<;2;
+  Usage: {prefix}{commandname} <role name> <user 1> <user 2> ...{return}
+}
+
+{set;~rid;-1}
+{if;{args;0};startswith;<@&;
+  {set;~rid;{split;{args;0};<@&}}
+  {set;~rid;{split;{get;~rid;1};>}}
+  {set;~rid;{get;~rid;0}}
+}
+
+{if;{get;~rid};<;0;
+  :x: Invalid role {args;0}
+}
+
+{rolename;{get;~rid}}{space}role added for:
+{for;~index;1;<;{argslength};
+  {if;{roleadd;{get;~rid};{userid;{args;{get;~index}}}};
+    {username;{args;{get;~index}}}{if;{get;~index};==;{math;-;{argslength};1};;,}{space}}
+}
