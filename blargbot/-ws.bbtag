@@ -1,6 +1,7 @@
 {//;timer;{delete;{messageid}};5s}
 {if;{logic;&&;{bool;{argslength};>;0};{logic;||;{bool;{upper;{args;0}};==;A};{bool;{upper;{args;0}};==;B}}};
   {if;{userhasrole;{roleid;officer}};
+    {set;~working;{send;{channelid};Working on it! This may take some time...}}
     {set;~roleids;[]}
     {foreach;~roleid;{roles};
       {if;{upper;{rolename;{get;~roleid}}};startswith;WS{upper;{args;0}};
@@ -27,6 +28,7 @@
     {for;~durindex;0;<;{length;{get;~uniquedur}};
       {get;~uniquedur;{get;~durindex}}{if;{get;~durindex};==;{math;-;{length;{get;~uniquedur}};1};;,}{space}
     }
+    {delete;{channelid};{get;~working}}
   ;
     You need to have an Officer role to use this command
   }

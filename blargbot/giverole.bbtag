@@ -10,6 +10,8 @@
   {set;~rid;{split;{args;0};<@&}}
   {set;~rid;{split;{get;~rid;1};>}}
   {set;~rid;{get;~rid;0}}
+;
+  {set;~rid;{roleid;{args;0}}}
 }
 
 {if;{get;~rid};<;0;

@@ -5,7 +5,7 @@
     WS{upper;{args;0}} Role added for: 
     {for;~index;1;<;{argslength};
       {if;{roleadd;{roleid;WS{args;0}-Everyone};{userid;{args;{get;~index}}}};
-        {args;{get;~index}}{if;{get;~index};==;{math;-;{argslength};1};;,}{space};}
+        {usernick;{args;{get;~index}}}{if;{get;~index};==;{math;-;{argslength};1};;,}{space};}
     }
   ;
     You need to have an Officer role to use this command

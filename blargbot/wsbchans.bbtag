@@ -1,5 +1,5 @@
 {//;set;~wsb-channels;["wsb-chat","wsb-orders","wsb-team-1","wsb-team-2","wsb-team-3","wsb-offense","wsb-afk","wsb-reminders"]}
-{set;~wsbcatname;["White Star B","White Star B Dashboard"]}
+{set;~wsbcatname;["White Star B","White Star B Orders","White Star B Dashboard","White Star B Command"]}
 {set;~wsb-channels;[]}
 {foreach;~channels;{channels};
   {foreach;~catname;{get;~wsbcatname};
