@@ -10,6 +10,25 @@
 {set;~remove;[]}
 {set;~index}
 {if;{userhasrole;{roleid;{get;~visitorRoleName}};{args;0}};
+  {set;~basenick;{usernick;{args;0}}}
+  {set;~oldusernick;{usernick;{args;0}}}
+  {while;{get;~basenick};includes;[; {//;remove all bracketed parts}
+  	{set;~openbracket;{indexof;{get;~basenick};[}}
+  	{set;~closebracket;{indexof;{get;~basenick};]}}
+  	{set;~base1;{substring;{get;~basenick};0;{math;-;{get;~openbracket};1}}}
+    {set;~base2;{substring;{get;~basenick};{math;+;{get;~closebracket};1}}}
+    {set;~basenick;{trim;{get;~base1}{get;~base2}}}
+  }
+  {if;{length;{get;~basenick}};<=;32;
+    {if;{setnick;{get;~basenick};{userid;{args;0}}};includes;Could not change nickname;
+        :x: Could not rename `{get;~oldusernick}` to `{get;~basenick}`. Probably a permissions issue.
+    ;
+        {set;~nickmsg;:white_check_mark: Renamed `{get;~oldusernick}` to `{get;~basenick}`.{newline}}
+    }
+  ;
+    :x: `{get;~basenick}` exceeds 32 characters.
+  }
+  
   {if;{roleadd;{roleid;{get;~memberRoleName}};{userid;{args;0}}};{push;{get;~add};{get;~memberRoleName}}}
   {if;{roleremove;{roleid;{get;~visitorRoleName}};{userid;{args;0}}};{push;{get;~remove};{get;~visitorRoleName}}}
   {if;{userhasrole;{roleid;{get;~ws-guestRoleName}};{args;0}};
@@ -20,16 +39,16 @@
   
   {if;{length;{get;~add}};>;0;
     {set;~addmsg;Roles added for {usernick;{args;0}}:{space}}
-    {for;~index;0;<;{length;{get;~add}};{set;~addmsg;{get;~addmsg}{get;~add;{get;~index}}{if;{get;~index};==;{math;-;{length;{get;~add}};1};;,{space}}}}
+    {for;~index;0;<;{length;{get;~add}};{set;~addmsg;{get;~addmsg}{get;~add;{get;~index}}{if;{get;~index};==;{math;-;{length;{get;~add}};1};{newline};,{space}}}}
   }
   
   {if;{length;{get;~remove}};>;0;
     {set;~removemsg;Roles removed for {usernick;{args;0}}:{space}}
-    {for;~index;0;<;{length;{get;~remove}};{set;~removemsg;{get;~removemsg}{get;~remove;{get;~index}}{if;{get;~index};==;{math;-;{length;{get;~remove}};1};;,{space}}}}
+    {for;~index;0;<;{length;{get;~remove}};{set;~removemsg;{get;~removemsg}{get;~remove;{get;~index}}{if;{get;~index};==;{math;-;{length;{get;~remove}};1};{newline};,{space}}}}
   }
   
-  {if;{logic;||;{length;{get;~add}};{length;{get;~remove}}};
-    {void;{send;{channelid};{get;~addmsg}{newline}{get;~removemsg}}}
+  {if;{logic;||;{length;{get;~nickmsg}};{length;{get;~add}};{length;{get;~remove}}};
+    {void;{send;{channelid};{get;~nickmsg}{get;~addmsg}{get;~removemsg}}}
   ;
     {void;{send;{channelid};No roles added or removed for {usernick;{args;0}}}}
   }
