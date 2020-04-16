@@ -22,7 +22,9 @@ Type `!wsroster help` for more information
 	{set;_wsrosterchanid;{channelid}}
     {set;_wsrostermsgid;{send;{channelid};{get;~msg}}}
   ;
-    {void;{send;{channelid};White Star Roster Empty}}
+	{if;{logic;&&;{bool;{get;_wsrosterchanid};>;0};{bool;{get;_wsrostermsgid};>;0}};{delete;{get;_wsrosterchanid};{get;_wsrostermsgid}}}
+	{set;_wsrosterchanid;{channelid}}
+    {set;_wsrostermsgid;{send;{channelid};White Star Roster Empty}}
   }
 }
 
@@ -63,7 +65,10 @@ Type `!wsroster help` for more information
 {function;clear;
   {set;~wsrosterPlayers;{rolemembers;{get;~wsrosterRoleName}}}
   {foreach;~element;~wsrosterPlayers;{void;{roleremove;{roleid;{get;~wsrosterRoleName}};{userid;{get;~element}}}}}
-  {void;{send;{channelid};Removed all players from WS Roster}}
+  
+  {if;{logic;&&;{bool;{get;_wsrosterchanid};>;0};{bool;{get;_wsrostermsgid};>;0}};{delete;{get;_wsrosterchanid};{get;_wsrostermsgid}}}
+  {set;_wsrosterchanid;{channelid}}
+  {set;_wsrostermsgid;{send;{channelid};Removed all players from WS Roster}}
 }
 
 {execcc;wsplayersonly}
