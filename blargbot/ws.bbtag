@@ -1,12 +1,18 @@
 {//;timer;{delete;{messageid}};5s}
 
+{set;~wsrosterRoleName;WS-Roster}
 {if;{logic;&&;{bool;{argslength};>;1};{logic;||;{bool;{upper;{args;0}};==;A};{bool;{upper;{args;0}};==;B}}};
   {if;{userhasrole;{roleid;officer}};
-    WS{upper;{args;0}} Role added for: 
+    {set;~msg;WS{upper;{args;0}} Role added for:{newline}}
     {for;~index;1;<;{argslength};
       {if;{roleadd;{roleid;WS{args;0}-Everyone};{userid;{args;{get;~index}}}};
-        {usernick;{args;{get;~index}}}{if;{get;~index};==;{math;-;{argslength};1};;,}{space};}
+	    {if;{userhasrole;{roleid;{get;~wsrosterRoleName}};{args;{get;~index}}};
+		  {void;{roleremove;{roleid;{get;~wsrosterRoleName}};{userid;{args;{get;~index}}}}}
+		}
+        {set;~msg;{get;~msg}{usernick;{args;{get;~index}}}{if;{get;~index};==;{math;-;{argslength};1};;,}{space}}
+	  }
     }
+	{void;{send;{channelid};{get;~msg}}}
   ;
     You need to have an Officer role to use this command
   }

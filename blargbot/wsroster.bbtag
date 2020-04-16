@@ -1,0 +1,105 @@
+{//;changelog
+2020-04-16 New command
+}
+
+{set;~wsrosterRoleName;WS-Roster}
+
+{function;help;
+  __**Usage**__: !wsroster < list | join | leave | clear > [users]
+
+Add users to white star roster
+  
+Type `!wsroster help` for more information
+}
+  
+{function;list;
+  {set;~wsrosterPlayers;{rolemembers;{get;~wsrosterRoleName}}}
+  {if;{length;{get;~wsrosterPlayers}};
+    {set;~msg;White Star Roster:}
+	{set;~index;1}
+	{foreach;~element;~wsrosterPlayers;{set;~msg;{get;~msg}{newline}{get;~index}:{space}{usernick;{get;~element}}}{set;~index;{math;+;{get;~index};1}}}
+    {void;{send;{channelid};{get;~msg}}}
+  ;
+    {void;{send;{channelid};White Star Roster Empty}}
+  }
+}
+
+{function;join;
+  {if;{paramslength};>;0;
+    {set;~uid;{userid;{params;0}}}
+  ;
+    {set;~uid;{userid}}
+  }
+  {if;{userhasrole;{roleid;{get;~wsrosterRoleName}};{get;~uid}};
+    {void;{send;{channelid};{usernick;{get;~uid}} is already in the WS Roster}}
+  ;
+	{if;{roleadd;{roleid;{get;~wsrosterRoleName}};{get;~uid}};
+      {void;{send;{channelid};{usernick;{get;~uid}} added to WS Roster}}
+    ;
+      {void;{send;{channelid};:x: Failed to add {usernick;{get;~uid}} to WS Roster}}
+    }
+  }
+}
+
+{function;leave;
+  {if;{paramslength};>;0;
+    {set;~uid;{userid;{params;0}}}
+  ;
+    {set;~uid;{userid}}
+  }
+  {if;{userhasrole;{roleid;{get;~wsrosterRoleName}};{get;~uid}};
+    {if;{roleremove;{roleid;{get;~wsrosterRoleName}};{get;~uid}};
+      {void;{send;{channelid};{usernick;{get;~uid}} removed from WS Roster}}
+    ;
+      {void;{send;{channelid};:x: Failed to remove {usernick;{get;~uid}} from WS Roster}}
+    }
+  ;
+    {void;{send;{channelid};{usernick;{get;~uid}} is not in the WS Roster}}
+  }
+}
+
+{function;clear;
+  {set;~wsrosterPlayers;{rolemembers;{get;~wsrosterRoleName}}}
+  {foreach;~element;~wsrosterPlayers;{void;{roleremove;{roleid;{get;~wsrosterRoleName}};{userid;{get;~element}}}}}
+  {void;{send;{channelid};Removed all players from WS Roster}}
+}
+
+{execcc;wsplayersonly}
+
+{if;{argslength};==;0;
+  {func.list}
+  {return}
+}
+
+{switch;{lower;{args;0}};
+help;
+  {func.help}
+  {return}
+;
+join;
+  {if;{argslength};>;1;
+    {func.join;{args;1}}
+  ;
+    {func.join}
+  }
+  {return}
+;
+leave;
+  {if;{argslength};>;1;
+    {func.leave;{args;1}}
+  ;
+    {func.leave}
+  }
+  {return}
+;
+clear;
+  {func.clear}
+  {return}
+;
+list;
+  {func.list}
+  {return}
+;
+{func.help}
+{return}
+}
