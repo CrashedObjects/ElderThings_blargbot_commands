@@ -71,6 +71,9 @@ Type `!wsroster help` for more information
   {set;_wsrostermsgid;{send;{channelid};Removed all players from WS Roster}}
 }
 
+{if;{logic;&&;{bool;{get;_wsrostercmdchanid};>;0};{bool;{get;_wsrostercmdmsgid};>;0}};{delete;{get;_wsrostercmdchanid};{get;_wsrostercmdmsgid}}}
+{set;_wsrostercmdchanid;{channelid}}
+{set;_wsrostercmdmsgid;{messageid}}
 {execcc;wsplayersonly}
 
 {if;{argslength};==;0;
