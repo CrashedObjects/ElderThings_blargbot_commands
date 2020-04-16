@@ -18,7 +18,9 @@ Type `!wsroster help` for more information
     {set;~msg;White Star Roster:}
 	{set;~index;1}
 	{foreach;~element;~wsrosterPlayers;{set;~msg;{get;~msg}{newline}{get;~index}:{space}{usernick;{get;~element}}}{set;~index;{math;+;{get;~index};1}}}
-    {void;{send;{channelid};{get;~msg}}}
+	{if;{logic;&&;{bool;{get;_wsrosterchanid};>;0};{bool;{get;_wsrostermsgid};>;0}};{delete;{get;_wsrosterchanid};{get;_wsrostermsgid}}}
+	{set;_wsrosterchanid;{channelid}}
+    {set;_wsrostermsgid;{send;{channelid};{get;~msg}}}
   ;
     {void;{send;{channelid};White Star Roster Empty}}
   }
@@ -91,6 +93,7 @@ leave;
   ;
     {func.leave}
   }
+  {func.list}
   {return}
 ;
 clear;
