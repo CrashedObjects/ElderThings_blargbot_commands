@@ -93,6 +93,7 @@ leave;
   {return}
 ;
 clear;
+  {execcc;officeronly}
   {func.clear}
   {return}
 ;
