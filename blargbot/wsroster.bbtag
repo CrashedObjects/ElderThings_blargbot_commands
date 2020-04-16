@@ -82,6 +82,7 @@ join;
   ;
     {func.join}
   }
+  {func.list}
   {return}
 ;
 leave;
