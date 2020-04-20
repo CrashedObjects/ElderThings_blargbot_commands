@@ -2,7 +2,7 @@
 
 {set;~wsrosterRoleName;WS-Roster}
 {if;{logic;&&;{bool;{argslength};>;1};{logic;||;{bool;{upper;{args;0}};==;A};{bool;{upper;{args;0}};==;B}}};
-  {if;{userhasrole;{roleid;officer}};
+  {if;{userhasrole;{roleid;officer}};==;true;
     {set;~msg;WS{upper;{args;0}} Role added for:{newline}}
     {for;~index;1;<;{argslength};
       {if;{roleadd;{roleid;WS{args;0}-Everyone};{userid;{args;{get;~index}}}};

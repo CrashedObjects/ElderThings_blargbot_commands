@@ -1,1 +1,1 @@
-{if;{logic;||;{userhasrole;{roleid;officer}};{userhasrole;{roleid;Recruiters}}};;You need to have an Officer or Recruiters role to use this command{return}}
+{if;{logic;||;{bool;{userhasrole;{roleid;officer}};==;true};{bool;{userhasrole;{roleid;Recruiters}};==;true}};;You need to have an Officer or Recruiters role to use this command{return}}

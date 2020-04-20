@@ -1,1 +1,1 @@
-{if;{logic;||;{userhasrole;{roleid;WS-Guest}};{userhasrole;{roleid;WS-Everyone}}};;You need to have a WS-Guest or WS-Everyone role to use this command{return}}
+{if;{logic;||;{bool;{userhasrole;{roleid;WS-Guest}};==;true};{bool;{userhasrole;{roleid;WS-Everyone}};==;true}};;You need to have a WS-Guest or WS-Everyone role to use this command{return}}

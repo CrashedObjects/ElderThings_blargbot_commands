@@ -1,1 +1,1 @@
-{if;{userhasrole;{roleid;officer}};;You need to have an Officer role to use this command{return}}
+{if;{userhasrole;{roleid;officer}};==;true;;You need to have an Officer role to use this command{return}}

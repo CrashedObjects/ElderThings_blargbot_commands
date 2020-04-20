@@ -1,6 +1,6 @@
 {//;timer;{delete;{messageid}};5s}
 {if;{logic;&&;{bool;{argslength};>;0};{logic;||;{bool;{upper;{args;0}};==;A};{bool;{upper;{args;0}};==;B}}};
-  {if;{userhasrole;{roleid;officer}};
+  {if;{userhasrole;{roleid;officer}};==;true;
     {set;~working;{send;{channelid};Working on it! This may take some time...}}
     {set;~roleids;[]}
     {foreach;~roleid;{roles};

@@ -34,7 +34,7 @@ Type `!wsroster help` for more information
   ;
     {set;~uid;{userid}}
   }
-  {if;{userhasrole;{roleid;{get;~wsrosterRoleName}};{get;~uid}};
+  {if;{userhasrole;{roleid;{get;~wsrosterRoleName}};{get;~uid}};==;true;
     {void;{send;{channelid};{usernick;{get;~uid}} is already in the WS Roster}}
   ;
 	{if;{roleadd;{roleid;{get;~wsrosterRoleName}};{get;~uid}};
@@ -51,7 +51,7 @@ Type `!wsroster help` for more information
   ;
     {set;~uid;{userid}}
   }
-  {if;{userhasrole;{roleid;{get;~wsrosterRoleName}};{get;~uid}};
+  {if;{userhasrole;{roleid;{get;~wsrosterRoleName}};{get;~uid}};==;true;
     {if;{roleremove;{roleid;{get;~wsrosterRoleName}};{get;~uid}};
       {void;{send;{channelid};{usernick;{get;~uid}} removed from WS Roster}}
     ;
