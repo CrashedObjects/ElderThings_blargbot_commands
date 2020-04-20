@@ -1,18 +1,29 @@
 {//;timer;{delete;{messageid}};5s}
 
 {set;~wsrosterRoleName;WS-Roster}
+{set;~working;0}
 {if;{logic;&&;{bool;{argslength};>;1};{logic;||;{bool;{upper;{args;0}};==;A};{bool;{upper;{args;0}};==;B}}};
   {if;{userhasrole;{roleid;officer}};==;true;
+    {if;{lower;{args;1}};==;roster;
+	  {set;~working;{send;{channelid};Adding WS{upper;{args;0}}-Everyone role to all rostered players! This may take some time...}}
+	  {set;~players;{rolemembers;{get;~wsrosterRoleName}}}
+	;
+	  {set;~players;[]}
+	  {for;~index;1;<;{argslength};
+	    {push;{get;~players};{args;{get;~index}}}
+	  }
+	}
     {set;~msg;WS{upper;{args;0}} Role added for:{newline}}
-    {for;~index;1;<;{argslength};
-      {if;{roleadd;{roleid;WS{args;0}-Everyone};{userid;{args;{get;~index}}}};
-	    {if;{userhasrole;{roleid;{get;~wsrosterRoleName}};{args;{get;~index}}};
-		  {void;{roleremove;{roleid;{get;~wsrosterRoleName}};{userid;{args;{get;~index}}}}}
+    {for;~index;0;<;{length;{get;~players}};
+      {if;{roleadd;{roleid;WS{args;0}-Everyone};{userid;{get;~players;{get;~index}}}};
+	    {if;{userhasrole;{roleid;{get;~wsrosterRoleName}};{get;~players;{get;~index}}};
+		  {void;{roleremove;{roleid;{get;~wsrosterRoleName}};{userid;{get;~players;{get;~index}}}}}
 		}
-        {set;~msg;{get;~msg}{usernick;{args;{get;~index}}}{if;{get;~index};==;{math;-;{argslength};1};;,}{space}}
+        {set;~msg;{get;~msg}{usernick;{get;~players;{get;~index}}}{if;{get;~index};==;{math;-;{length;{get;~players}};1};;,}{space}}
 	  }
     }
 	{void;{send;{channelid};{get;~msg}}}
+	{if;{get;~working};>;0;{delete;{channelid};{get;~working}}}
   ;
     You need to have an Officer role to use this command
   }
