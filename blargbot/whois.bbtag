@@ -1,0 +1,17 @@
+{if;{argslength};<;1;Usage: {prefix}{commandname} rolename{return}}
+
+{if;0{roleid;{args;0};true};>;0;;No roles found.{return}}
+
+{set;~members;{rolemembers;{args;0}}}
+{set;~msg}
+{set;~index}
+{if;{length;{get;~members}};>;0;
+  {set;~msg;{get;~msg}Users in role **{rolename;{args;0}}**:{newline}}
+  {for;~index;0;<;{length;{get;~members}};
+    {set;~msg;{get;~msg}{usernick;{get;~members;{get;~index}}}{if;{get;~index};==;{math;-;{length;{get;~members}};1};;,{space}}}
+  }
+  {get;~msg}
+;
+  {set;~msg;No users found for **{rolename;{args;}}**}
+  {get;~msg}
+}
