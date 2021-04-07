@@ -55,7 +55,7 @@ To indicate you have returned from AFK, type {prefix}back. For more information,
   {return}
 }
 
-{if;{logic;&&;{bool;{argslength};>;1};{bool;{userid;{args;0};1};!=;{userid;zzzabcnobodyzzz;1}};{bool;{args;0};startswith;<@}};
+{if;{logic;&&;{bool;{argslength};>;1};{bool;{userid;{args;0};1};!=;{userid;zzzabcnobodyzzz;1}}};
   {if;{userhasrole;{roleid;officer}};
     {set;~userid;{userid;{args;0}}}
   ;
