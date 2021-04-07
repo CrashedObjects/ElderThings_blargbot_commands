@@ -22,7 +22,6 @@ _delmsg data is TIMExCHANIDxMSGID
     {set;~ftime;{math;+;{time;X};{args;0}}}
     {push;_delmsg;{get;~ftime}x{args;1}x{args;2}}
 	{push;_nextbgtasktime;{get;~ftime}}
-    {sort;_nextbgtasktime}
   }
 }
 
