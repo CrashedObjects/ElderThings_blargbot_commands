@@ -5,14 +5,21 @@
 2019-11-24 - Adapted for Elder Things
 }
 
-{//; afk auto response pings}
+{//; afk auto response pings and auto mention alt accounts}
+
+{set;~mainAcc;["491816715030888459"]}
+{set;~mainAccName;["Saint"]}{//;not used in logic. for record keeping in code only}
+{set;~altAcc;["535116701885267978"]}
+{set;~altAccName;["Chase"]}{//;not used in logic. for record keeping in code only}
+
 
 {//; auto delete message after 5 mins}
 {set;deleteTimeDelay;600}
+{set;~afkmsg;1}
 
 {//; check caller's !afkset setting for alerts. quit early if they don't want alerts}
 {if;{get;_{userid}_afk_alerts};==;0;
-  {return}
+  {set;~afkmsg;0}
 }
 
 {//; quit early if it is not in allowed channels}
@@ -38,17 +45,30 @@
 
 {//; exit early if there are no AFK users mentioned}
 {if;{length;{get;~memberafk}};==;0;
-  {return}
+  {set;~afkmsg;0}
 }
 
 {//; build the messages for replies or DMs as needed}
 {set;~now;{time;X}}
 
-
-{execcc;bgdelmsg;{get;deleteTimeDelay};{channelid};{send;{channelid};{embedbuild;
-  title:AFK Alert for the following members\:;
-  color:yellow;
-  description: {foreach;~uid;{get;~memberafk};{set;~afkX;{time;X;{get;_{get;~uid}_afk}}}{set;~ago;{trim;{execcc;timediff;twodivs;{get;~now};{get;~afkX}}}}{usernick;{get;~uid}} is AFK and {if;{math;-;{get;~now};{get;~afkX}};<;0;will return **in {get;~ago}**.;said they'd return **{get;~ago} ago**.}{if;{length;{get;_{get;~uid}_afk_msg}};{newline} {zws} {zws} Reason: {substring;{get;_{get;~uid}_afk_msg};0;100}{if;{length;{get;_{get;~uid}_afk_msg}};>;100;{set;~addfooter;1}...}}{newline}};
-  {if;{get;~addfooter};==;1;footer.text: Use !seen <username> to view user's full AFK reason}
-  ;
-}}}
+{if;0{get;~afkmsg};
+  {execcc;bgdelmsg;{get;deleteTimeDelay};{channelid};{send;{channelid};{embedbuild;
+    title:AFK Alert for the following members\:;
+    color:yellow;
+    description: {foreach;~uid;{get;~memberafk};{set;~afkX;{time;X;{get;_{get;~uid}_afk}}}{set;~ago;{trim;{execcc;timediff;twodivs;{get;~now};{get;~afkX}}}}{usernick;{get;~uid}} is AFK and {if;{math;-;{get;~now};{get;~afkX}};<;0;will return **in {get;~ago}**.;said they'd return **{get;~ago} ago**.}{if;{length;{get;_{get;~uid}_afk_msg}};{newline} {zws} {zws} Reason: {substring;{get;_{get;~uid}_afk_msg};0;100}{if;{length;{get;_{get;~uid}_afk_msg}};>;100;{set;~addfooter;1}...}}{newline}};
+    {if;{get;~addfooter};==;1;footer.text: Use !seen <username> to view user's full AFK reason}
+    ;
+  }}}
+;
+  {//;auto mention alt users}
+  {set;~automentionmainmsg}
+  {set;~automentionmainmsgcontent;0}
+  {foreach;~usermention;{regexmatch;{messagetext};/<@!?\d+>/g};
+    {set;~mentioneduserid;{userid;{get;~usermention};quiet}}
+    {if;{indexof;{get;~altAcc};{get;~mentioneduserid}};>;-1;
+      {set;~automentionmainmsg;{get;~automentionmainmsg}{space}{usermention;{get;~mainAcc;{indexof;{get;~altAcc};{get;~mentioneduserid}}}}}
+      {set;~automentionmainmsgcontent;1}
+    }
+  }
+  {if;0{get;~automentionmainmsgcontent};{void;{send;{channelid};{get;~automentionmainmsg}{space}someone pinged your alt}}}
+}
